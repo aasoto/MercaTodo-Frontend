@@ -3,7 +3,7 @@ import { RoleContext } from "./RoleContext";
 
 export const RoleProvider = ({ children }) => {
 
-    const [role, setRole] = useState('admin');
+    const [role, setRole] = useState('');
 
     return (
         <RoleContext.Provider value={{ role, setRole }}>
