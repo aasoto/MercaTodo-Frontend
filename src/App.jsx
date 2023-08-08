@@ -1,9 +1,13 @@
+import { RoleProvider } from "./context";
+import { Navbar } from "./ui/components/navbar";
 
 function App() {
 
   return (
     <>
-      <p>MercaTodo App</p>
+      <RoleProvider>
+        <Navbar />
+      </RoleProvider>
     </>
   )
 }
