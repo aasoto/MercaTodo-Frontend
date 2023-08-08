@@ -1,13 +1,13 @@
-import { RoleProvider } from "./context";
-import { Navbar } from "./ui/components/navbar";
+import { AuthProvider } from "./context";
+import { AppRouter } from "./routes";
 
 function App() {
 
   return (
     <>
-      <RoleProvider>
-        <Navbar />
-      </RoleProvider>
+      <AuthProvider>
+        <AppRouter />
+      </AuthProvider>
     </>
   )
 }

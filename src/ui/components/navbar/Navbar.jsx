@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom"
 import { ArrowLeftOnRectangleIcon, Bars3Icon } from '@heroicons/react/24/solid';
 import { useContext } from "react";
-import { RoleContext } from "../../../context";
+import { AuthContext } from "../../../context";
 import { OptionsNavbarAdmin } from "./OptionsNavbarAdmin";
 import { OptionsNavbarClient } from "./OptionsNavbarClient";
 import { MercaTodoLogoGray } from "../images";
@@ -10,7 +10,7 @@ import { OptionNavbarCart } from "./OptionNavbarCart";
 
 export const Navbar = () => {
 
-    const { role } = useContext(RoleContext);
+    const { role } = useContext(AuthContext);
 
     return (
         <div className="fixed z-10 flex justify-center items-center w-full h-24 p-4">

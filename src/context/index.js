@@ -1,2 +1,2 @@
-export * from './RoleContext';
-export * from './RoleProvider';
+export * from './AuthContext';
+export * from './AuthProvider';
