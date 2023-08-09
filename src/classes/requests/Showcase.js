@@ -4,11 +4,10 @@ import { ResponseService } from "../services";
 
 export class Showcase {
 
-    async getData() {
-        const { APIUrl, showcaseEndpoints } = env;
+    async getData(endPoint) {
 
         try {
-            const response = await axios.get(`${APIUrl}${showcaseEndpoints.getData.endPoint}`);
+            const response = await axios.get(endPoint);
             return ResponseService.responseSuccess(response);
         } catch (error) {
             console.error(error);
