@@ -1,9 +1,13 @@
+import { AuthProvider } from "./context";
+import { AppRouter } from "./routes";
 
 function App() {
 
   return (
     <>
-      <p>MercaTodo App</p>
+      <AuthProvider>
+        <AppRouter />
+      </AuthProvider>
     </>
   )
 }
