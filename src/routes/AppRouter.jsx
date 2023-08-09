@@ -1,6 +1,7 @@
-import { Navigate, Route, Routes } from "react-router-dom"
-import { PublicRoute } from "./PublicRoute"
+import { Route, Routes } from "react-router-dom"
+import { Routes as RoutesComponent } from './Routes';
 import { LoginPage, Navbar, RegisterPage, ShowcasePage } from "../ui"
+import { PrivateRoute, PublicRoute } from "../middlewares";
 
 export const AppRouter = () => {
   return (
@@ -21,7 +22,9 @@ export const AppRouter = () => {
                 </PublicRoute>
             }/>
             <Route path="/*" element={
-                <Navigate to={'/'}/>
+                <PrivateRoute>
+                    <RoutesComponent />
+                </PrivateRoute>
             }/>
         </Routes>
     </>
