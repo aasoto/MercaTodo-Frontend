@@ -6,13 +6,18 @@ import { ShowcaseProductCard } from './ShowcaseProductCard';
 export const ShowcasePage = () => {
 
     const [response, setResponse] = useState({ loading: true });
-    const [pageUrl, setPageUrl] = useState(`${env.APIUrl}${env.showcaseEndpoints.getData.endPoint}?include=${env.showcaseEndpoints.getData.parameters.include}`);
+    const [pageUrl, setPageUrl] = useState(
+        localStorage.getItem('lastEndpoint')
+        ? localStorage.getItem('lastEndpoint')
+        : `${env.APIUrl}${env.showcaseEndpoints.getData.endPoint}?include=${env.showcaseEndpoints.getData.parameters.include}`
+    );
 
     const showcaseRequest = new Showcase();
 
     useEffect(() => {
         showcaseRequest.getData(pageUrl)
             .then(resp => {
+                localStorage.setItem('lastEndpoint', pageUrl);
                 setResponse({ loading: false, ...resp });
             });
     }, [pageUrl]);
