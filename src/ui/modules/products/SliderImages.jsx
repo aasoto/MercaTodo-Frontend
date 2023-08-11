@@ -1,10 +1,11 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
-import { env } from "../../../classes";
+import { ENV } from "../../../../env";
 
 export const SliderImages = ({ arrayPictures }) => {
 
-    const { APIUrl, productsImagesEndpont } = env;
+    const { APIUrl, endPoints } = ENV;
+    const { products } = endPoints;
 
     const [focusedImage, setFocusedImage] = useState(arrayPictures[0]);
     const [numberPicture, setNumberPicture] = useState(1);
@@ -12,9 +13,9 @@ export const SliderImages = ({ arrayPictures }) => {
 
     const previousImage = () => {
         if (numberPicture === 1) {
-            if (pictures[2] === `${APIUrl}${productsImagesEndpont}`) return;
+            if (pictures[2] === `${APIUrl}${products.imagesPath}`) return;
         } else {
-            if (pictures[(numberPicture - 1) - 1] === `${APIUrl}${productsImagesEndpont}`) return;
+            if (pictures[(numberPicture - 1) - 1] === `${APIUrl}${products.imagesPath}`) return;
         }
 
         if (numberPicture === 1) {
@@ -27,9 +28,9 @@ export const SliderImages = ({ arrayPictures }) => {
 
     const nextImage = () => {
         if (numberPicture === 3) {
-            if (pictures[0] === `${APIUrl}${productsImagesEndpont}`) return;
+            if (pictures[0] === `${APIUrl}${products.imagesPath}`) return;
         } else {
-            if (pictures[(numberPicture - 1) + 1] === `${APIUrl}${productsImagesEndpont}`) return;
+            if (pictures[(numberPicture - 1) + 1] === `${APIUrl}${products.imagesPath}`) return;
         }
 
         if (numberPicture === 3) {
@@ -78,7 +79,7 @@ export const SliderImages = ({ arrayPictures }) => {
                     alt="picture_1"
                 />
                 {
-                    pictures[1] != `${APIUrl}${productsImagesEndpont}` &&
+                    pictures[1] != `${APIUrl}${products.imagesPath}` &&
                     <img
                         onClick={() => automaticallyFocusImage(2, pictures[1])}
                         className={
@@ -91,7 +92,7 @@ export const SliderImages = ({ arrayPictures }) => {
                     />
                 }
                 {
-                    pictures[2] != `${APIUrl}${productsImagesEndpont}` &&
+                    pictures[2] != `${APIUrl}${products.imagesPath}` &&
                     <img
                         onClick={() => automaticallyFocusImage(3, pictures[2])}
                         className={

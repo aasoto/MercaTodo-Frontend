@@ -1,14 +1,17 @@
 import { useContext, useEffect } from "react"
 import { AuthContext } from "../../../context"
-import { Products, env } from "../../../classes";
+import { Products } from "../../../classes";
+import { ENV } from "../../../../env";
 
 export const ProductsPage = () => {
 
     const { token } = useContext(AuthContext);
+    const { APIUrl, endPoints } = ENV;
+    const { apiVersion, products } = endPoints;
 
     useEffect(() => {
         (new Products()).getData(
-            `${env.APIUrl}${env.productsEndpoints.getData.endPoint}`,
+            `${APIUrl}${apiVersion}${products.index}`,
             token,
         ).then( resp => {
             console.log(resp);

@@ -1,15 +1,19 @@
 import { useEffect, useState } from 'react'
 import { Container, PageTitle, Paginate, PrimaryInfoXL } from '../../components'
-import { Showcase, env } from '../../../classes';
+import { Showcase } from '../../../classes';
 import { ShowcaseProductCard } from './ShowcaseProductCard';
+import { ENV } from '../../../../env';
 
 export const ShowcasePage = () => {
+
+    const { APIUrl, endPoints, parameters } = ENV;
+    const { apiVersion, showcase } = endPoints;
 
     const [response, setResponse] = useState({ loading: true });
     const [pageUrl, setPageUrl] = useState(
         localStorage.getItem('lastEndpoint')
         ? localStorage.getItem('lastEndpoint')
-        : `${env.APIUrl}${env.showcaseEndpoints.getData.endPoint}?include=${env.showcaseEndpoints.getData.parameters.include}`
+        : `${APIUrl}${apiVersion}${showcase.index}?include=${parameters.showcase.include}`
     );
 
     const showcaseRequest = new Showcase();
@@ -42,7 +46,7 @@ export const ShowcasePage = () => {
                             links={response.data.meta.links} 
                             setPageUrl={setPageUrl}
                             setResponse={setResponse}
-                            parameters={`&include=${env.showcaseEndpoints.getData.parameters.include}`}
+                            parameters={`&include=${parameters.showcase.include}`}
                         />
                     </div>
             }

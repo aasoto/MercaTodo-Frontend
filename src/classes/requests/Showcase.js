@@ -1,5 +1,4 @@
 import axios from "axios";
-import { env } from '../env';
 import { ResponseService } from "../services";
 
 export class Showcase {

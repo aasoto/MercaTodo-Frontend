@@ -1,9 +1,10 @@
 import { useParams } from "react-router-dom";
-import { Showcase, env } from "../../../classes";
+import { Showcase } from "../../../classes";
 import { useEffect, useState } from "react";
 import { Container, PageTitle, PrimaryInfoXL } from "../../components";
 import { SliderImages } from "./SliderImages";
 import { DescriptionProduct } from "./DescriptionProduct";
+import { ENV } from "../../../../env";
 
 export const ShowProductPage = () => {
 
@@ -14,11 +15,11 @@ export const ShowProductPage = () => {
 
   const showcaseRequest = new Showcase();
 
-  const { APIUrl, showcaseEndpoints } = env;
-  const { endPoint, parameters } = showcaseEndpoints.getData;
+  const { APIUrl, endPoints, parameters } = ENV;
+  const { apiVersion, showcase } = endPoints;
 
   useEffect(() => {
-    showcaseRequest.getData(`${APIUrl}${endPoint}/${slug}?include=${parameters.include}`)
+    showcaseRequest.getData(`${APIUrl}${apiVersion}${showcase.index}/${slug}?include=${parameters.showcase.include}`)
       .then(resp => {
         setPictures([
           resp.data.data.picture_1,

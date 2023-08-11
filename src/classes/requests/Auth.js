@@ -1,13 +1,15 @@
 import axios from "axios";
-import { env } from "../env";
+import { ENV } from "../../../env";
 
 export class Auth {
+
     async login(email, password) {
+        const { APIUrl, endPoints } = ENV;
 
         let response;
 
         try {
-            response = await axios.post(`${env.APIUrl}${env.authEndpoints.login}`,
+            response = await axios.post(`${APIUrl}${endPoints.login}`,
                 {
                     email,
                     password
@@ -33,8 +35,10 @@ export class Auth {
     }
 
     async logout(userId) {
+        const { APIUrl, endPoints } = ENV;
+
         try {
-            await axios.post(`${env.APIUrl}${env.authEndpoints.logout}`,
+            await axios.post(`${APIUrl}${endPoints.logout}`,
                 {
                     user_id: userId,
                 }, {
@@ -44,6 +48,14 @@ export class Auth {
             });
         } catch (error) {
             console.error(error);
+        }
+    }
+
+    async getTypesDocuments() {
+        try {
+            
+        } catch (error) {
+            
         }
     }
 }
