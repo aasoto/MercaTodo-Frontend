@@ -4,13 +4,25 @@ export const ENV = {
     endPoints:{
         login: '/api/login',
         logout: '/api/logout',
+        register: '/api/register/client',
         apiVersion: '/api/v1',
         showcase: {
             index: '/showcase',
         },
         products: {
             index: '/products',
-            imagesPath: '/storage/images/products/'
+            imagesPath: '/storage/images/products/',
+        },
+        users: {
+            typeDocuments: {
+                index: '/type_documents',
+            },
+            states: {
+                index: '/states',
+            },
+            cities: {
+                index: '/cities',
+            }
         }
     },
     parameters: {
