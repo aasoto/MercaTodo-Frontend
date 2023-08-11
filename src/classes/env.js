@@ -1,6 +1,9 @@
 export const env = {
     url: 'http://127.0.0.1:5173',
     APIUrl: 'http://127.0.0.1:8000',
+    authEndpoints: {
+        login: '/api/login',
+    },
     showcaseEndpoints: {
         getData: {
             endPoint: '/api/v1/showcase',
