@@ -31,4 +31,19 @@ export class Auth {
 
         return response;
     }
+
+    async logout(userId) {
+        try {
+            await axios.post(`${env.APIUrl}${env.authEndpoints.logout}`,
+                {
+                    user_id: userId,
+                }, {
+                headers: {
+                    "content-type": "application/json"
+                }
+            });
+        } catch (error) {
+            console.error(error);
+        }
+    }
 }

@@ -3,6 +3,7 @@ export const env = {
     APIUrl: 'http://127.0.0.1:8000',
     authEndpoints: {
         login: '/api/login',
+        logout: '/api/logout',
     },
     showcaseEndpoints: {
         getData: {
@@ -11,6 +12,14 @@ export const env = {
                 include: 'category,product_unit'
             }
         },
+    },
+    productsEndpoints: {
+        getData: {
+            endPoint: '/api/v1/products',
+            parameters: {
+                include: 'category,product_unit'
+            }
+        }
     },
     productsImagesEndpont: '/storage/images/products/',
 }

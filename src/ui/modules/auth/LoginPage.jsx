@@ -7,7 +7,7 @@ import { AuthContext } from "../../../context";
 
 export const LoginPage = () => {
 
-    const { setRole, setToken } = useContext(AuthContext);
+    const { setRole, setToken, setUserId } = useContext(AuthContext);
 
     const [errors, setErrors] = useState({});
 
@@ -24,7 +24,8 @@ export const LoginPage = () => {
             switch (resp.statusText) {
                 case 'OK':
                     setRole(resp.data.role);
-                    setToken(resp.data.token);
+                    setToken(resp.data.access_token);
+                    setUserId(resp.data.user_id);
 
                     if (resp.data.role == 'admin') {
                         <Navigate to={'/products'} />

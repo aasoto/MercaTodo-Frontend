@@ -1,4 +1,4 @@
-import { NavLink, useLocation } from "react-router-dom"
+import { NavLink, Navigate, useLocation } from "react-router-dom"
 import { ArrowLeftOnRectangleIcon, Bars3Icon } from '@heroicons/react/24/solid';
 import { useContext } from "react";
 import { AuthContext } from "../../../context";
@@ -7,12 +7,23 @@ import { OptionsNavbarClient } from "./OptionsNavbarClient";
 import { MercaTodoLogoGray } from "../images";
 import { OptionsNavbarUnsigned } from "./OptionsNavbarUnsigned";
 import { OptionNavbarCart } from "./OptionNavbarCart";
+import { Auth } from "../../../classes";
 
 export const Navbar = () => {
 
-    const { role } = useContext(AuthContext);
+    const { role, userId, setRole, setToken, setUserId } = useContext(AuthContext);
 
     const { pathname } = useLocation();
+
+    const logout = () => {
+        (new Auth()).logout(userId)
+            .then(resp => {
+                setRole('');
+                setToken('');
+                setUserId();
+            });
+        <Navigate to={'/'} />
+    }
 
     return (
         <>{
@@ -55,7 +66,7 @@ export const Navbar = () => {
                                 <OptionNavbarCart />
                             }
                             { (role === 'admin' || role === 'client') &&
-                                <button className="text-gray-400 hover:text-gray-500 font-normal hover:font-medium px-4 py-2 hover:bg-gray-100 rounded-md transition duration-200 scale-100 hover:scale-105" title="Logout">
+                                <button onClick={logout} className="text-gray-400 hover:text-gray-500 font-normal hover:font-medium px-4 py-2 hover:bg-gray-100 rounded-md transition duration-200 scale-100 hover:scale-105" title="Logout">
                                     <ArrowLeftOnRectangleIcon className="w-6 h-6"/>
                                 </button>
                             }
