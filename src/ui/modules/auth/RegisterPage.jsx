@@ -1,11 +1,15 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useForm } from "../../../hooks";
-import { BasicInput, BasicLabel, FormTitle, PageTitle } from "../../components";
+import { BasicInput, BasicLabel, ErrorMessage, ErrorMessageMini, FormTitle } from "../../components";
 import { MercaTodoLogo } from "../../components/images";
 import { Auth, Generics } from "../../../classes";
 import { ENV } from "../../../../env";
+import { AuthContext } from "../../../context";
+import { Navigate } from "react-router-dom";
 
 export const RegisterPage = () => {
+
+    const { setRole, setToken, setUserId } = useContext(AuthContext);
 
     const { 
         type_document,
@@ -49,6 +53,8 @@ export const RegisterPage = () => {
     const [states, setStates] = useState([]);
     const [cities, setCities] = useState([]);
     const [filteredCities, setFilteredCities] = useState([]);
+
+    const [errors, setErrors] = useState({});
 
     useEffect(() => {
 
@@ -107,7 +113,22 @@ export const RegisterPage = () => {
             password,
             password_confirmation,
         ).then(resp => {
-            console.log(resp);
+            switch (resp.statusText) {
+                case 'Unprocessable Content':
+                    setErrors(resp.errors);
+                    break;
+                case 'Created':
+                    (new Auth()).login(email, password)
+                        .then(resp => {
+                            setRole(resp.data.role);
+                            setToken(resp.data.access_token);
+                            setUserId(resp.data.user_id);
+        
+                            <Navigate to={'/showcase'} />
+                            
+                        });
+                    break;
+            }
         });
     }
 
@@ -119,16 +140,25 @@ export const RegisterPage = () => {
                     <hr className="border w-full"/>
                     <FormTitle>Registro</FormTitle>
                     <hr className="border w-full"/>
+                    {   errors.message &&
+                        <ErrorMessage>{errors.message}</ErrorMessage>
+                    }
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5 w-full">
                         <div className="col-span-1">
-                            <label htmlFor="type_document" className="text-gray-600 text-sm font-medium">
-                                Tipo de documento
-                            </label>
+                            <div className="flex justify-between items-center gap-2">
+                                <BasicLabel htmlFor="type_document">
+                                    Tipo de documento
+                                </BasicLabel>
+                                <ErrorMessageMini>
+                                    {errors.errors?.type_document}
+                                </ErrorMessageMini>
+                            </div>
                             <select
                                 name="type_document"
                                 className="border border-gray-500 rounded-md px-5 py-2 placeholder:italic w-full"
                                 value={type_document}
                                 onChange={onInputChange}
+                                required
                             >
                                 <option value="">Seleccionar...</option>
                                 {   typeDocuments.length != 0 &&
@@ -143,31 +173,48 @@ export const RegisterPage = () => {
                             </select>
                         </div>
                         <div className="col-span-1">
-                            <BasicLabel htmlFor="number_document">
-                                Número de documento
-                            </BasicLabel>
+                            <div className="flex justify-between items-center gap-2">
+                                <BasicLabel htmlFor="number_document">
+                                    Número de documento
+                                </BasicLabel>
+                                <ErrorMessageMini>
+                                    {errors.errors?.number_document}
+                                </ErrorMessageMini>
+                            </div>
                             <BasicInput 
                                 type="text" 
                                 name="number_document"
                                 value={number_document}
                                 onChange={onInputChange}
+                                required={true}
                             />
                         </div>
                         <div className="col-span-1">
-                            <BasicLabel htmlFor="first_name">
-                                Primer nombre
-                            </BasicLabel>
+                            <div className="flex justify-between items-center gap-2">
+                                <BasicLabel htmlFor="first_name">
+                                    Primer nombre
+                                </BasicLabel>
+                                <ErrorMessageMini>
+                                    {errors.errors?.first_name}
+                                </ErrorMessageMini>
+                            </div>
                             <BasicInput 
                                 type="text" 
                                 name="first_name"
                                 value={first_name}
                                 onChange={onInputChange}
+                                required={true}
                             />
                         </div>
                         <div className="col-span-1">
-                            <BasicLabel htmlFor="second_name">
-                                Segundo nombre
-                            </BasicLabel>
+                            <div className="flex justify-between items-center gap-2">
+                                <BasicLabel htmlFor="second_name">
+                                    Segundo nombre
+                                </BasicLabel>
+                                <ErrorMessageMini>
+                                    {errors.errors?.second_name}
+                                </ErrorMessageMini>
+                            </div>
                             <BasicInput 
                                 type="text" 
                                 name="second_name"
@@ -176,20 +223,31 @@ export const RegisterPage = () => {
                             />
                         </div>
                         <div className="col-span-1">
-                            <BasicLabel htmlFor="surname">
-                                Primer apellido
-                            </BasicLabel>
+                            <div className="flex justify-between items-center gap-2">
+                                <BasicLabel htmlFor="surname">
+                                    Primer apellido
+                                </BasicLabel>
+                                <ErrorMessageMini>
+                                    {errors.errors?.surname}
+                                </ErrorMessageMini>
+                            </div>
                             <BasicInput 
                                 type="text" 
                                 name="surname"
                                 value={surname}
                                 onChange={onInputChange}
+                                required={true}
                             />
                         </div>
                         <div className="col-span-1">
-                            <BasicLabel htmlFor="second_surname">
-                                Segundo apellido
-                            </BasicLabel>
+                            <div className="flex justify-between items-center gap-2">
+                                <BasicLabel htmlFor="second_surname">
+                                    Segundo apellido
+                                </BasicLabel>
+                                <ErrorMessageMini>
+                                    {errors.errors?.second_surname}
+                                </ErrorMessageMini>
+                            </div>
                             <BasicInput 
                                 type="text" 
                                 name="second_surname"
@@ -198,25 +256,37 @@ export const RegisterPage = () => {
                             />
                         </div>
                         <div className="col-span-1">
-                            <BasicLabel htmlFor="birthdate">
-                                Fecha de nacimiento
-                            </BasicLabel>
+                            <div className="flex justify-between items-center gap-2">
+                                <BasicLabel htmlFor="birthdate">
+                                    Fecha de nacimiento
+                                </BasicLabel>
+                                <ErrorMessageMini>
+                                    {errors.errors?.birthdate}
+                                </ErrorMessageMini>
+                            </div>
                             <BasicInput 
                                 type="date" 
                                 name="birthdate"
                                 value={birthdate}
                                 onChange={onInputChange}
+                                required={true}
                             />
                         </div>
                         <div className="col-span-1">
-                            <BasicLabel htmlFor="gender">
-                                Genero
-                            </BasicLabel>
+                            <div className="flex justify-between items-center gap-2">
+                                <BasicLabel htmlFor="gender">
+                                    Genero
+                                </BasicLabel>
+                                <ErrorMessageMini>
+                                    {errors.errors?.gender}
+                                </ErrorMessageMini>
+                            </div>
                             <select
                                 name="gender"
                                 className="border border-gray-500 rounded-md px-5 py-2 placeholder:italic w-full"
                                 value={gender}
                                 onChange={onInputChange}
+                                required
                             >
                                 <option value="">Seleccionar...</option>
                                 <option value="m">Másculino</option>
@@ -225,36 +295,54 @@ export const RegisterPage = () => {
                             </select>
                         </div>
                         <div className="col-span-1">
-                            <BasicLabel htmlFor="phone">
-                                Telefono
-                            </BasicLabel>
+                            <div className="flex justify-between items-center gap-2">
+                                <BasicLabel htmlFor="phone">
+                                    Telefono
+                                </BasicLabel>
+                                <ErrorMessageMini>
+                                    {errors.errors?.phone}
+                                </ErrorMessageMini>
+                            </div>
                             <BasicInput 
                                 type="text" 
                                 name="phone"
                                 value={phone}
                                 onChange={onInputChange}
+                                required={true}
                             />
                         </div>
                         <div className="col-span-1">
-                            <BasicLabel htmlFor="address">
-                                Dirección
-                            </BasicLabel>
+                            <div className="flex justify-between items-center gap-2">
+                                <BasicLabel htmlFor="address">
+                                    Dirección
+                                </BasicLabel>
+                                <ErrorMessageMini>
+                                    {errors.errors?.address}
+                                </ErrorMessageMini>
+                            </div>
                             <BasicInput 
                                 type="text" 
                                 name="address"
                                 value={address}
                                 onChange={onInputChange}
+                                required={true}
                             />
                         </div>
                         <div className="col-span-1">
-                            <BasicLabel htmlFor="state_id">
-                                Estado
-                            </BasicLabel>
+                            <div className="flex justify-between items-center gap-2">
+                                <BasicLabel htmlFor="state_id">
+                                    Estado
+                                </BasicLabel>
+                                <ErrorMessageMini>
+                                    {errors.errors?.state_id}
+                                </ErrorMessageMini>
+                            </div>
                             <select
                                 name="state_id"
                                 className="border border-gray-500 rounded-md px-5 py-2 placeholder:italic w-full"
                                 value={state_id}
                                 onChange={onInputChange}
+                                required
                             >
                                 <option value="">Seleccionar...</option>
                                 {   states.length != 0 &&
@@ -269,14 +357,20 @@ export const RegisterPage = () => {
                             </select>
                         </div>
                         <div className="col-span-1">
-                            <BasicLabel htmlFor="city_id">
-                                Ciudad
-                            </BasicLabel>
+                            <div className="flex justify-between items-center gap-2">
+                                <BasicLabel htmlFor="city_id">
+                                    Ciudad
+                                </BasicLabel>
+                                <ErrorMessageMini>
+                                    {errors.errors?.city_id}
+                                </ErrorMessageMini>
+                            </div>
                             <select
                                 name="city_id"
                                 className="border border-gray-500 rounded-md px-5 py-2 placeholder:italic w-full"
                                 value={city_id}
                                 onChange={onInputChange}
+                                required
                             >
                                 <option value="">Seleccionar...</option>
                                 {   filteredCities.length != 0 &&
@@ -291,36 +385,54 @@ export const RegisterPage = () => {
                             </select>
                         </div>
                         <div className="col-span-1">
-                            <BasicLabel htmlFor="email">
-                                Correo eletronico
-                            </BasicLabel>
+                            <div className="flex justify-between items-center gap-2">
+                                <BasicLabel htmlFor="email">
+                                    Correo eletronico
+                                </BasicLabel>
+                                <ErrorMessageMini>
+                                    {errors.errors?.email}
+                                </ErrorMessageMini>
+                            </div>
                             <BasicInput 
                                 type="email" 
                                 name="email"
                                 value={email}
                                 onChange={onInputChange}
+                                required={true}
                             />
                         </div>
                         <div className="col-span-1">
-                            <BasicLabel htmlFor="password">
-                                Contraseña
-                            </BasicLabel>
+                            <div className="flex justify-between items-center gap-2">
+                                <BasicLabel htmlFor="password">
+                                    Contraseña
+                                </BasicLabel>
+                                <ErrorMessageMini>
+                                    {errors.errors?.password}
+                                </ErrorMessageMini>
+                            </div>
                             <BasicInput 
                                 type="password" 
                                 name="password"
                                 value={password}
                                 onChange={onInputChange}
+                                required={true}
                             />
                         </div>
                         <div className="col-span-1">
-                            <BasicLabel htmlFor="password_confirmation">
-                                Confirmación de contraseña
-                            </BasicLabel>
+                            <div className="flex justify-between items-center gap-2">
+                                <BasicLabel htmlFor="password_confirmation">
+                                    Confirmación de contraseña
+                                </BasicLabel>
+                                <ErrorMessageMini>
+                                    {errors.errors?.password_confirmation}
+                                </ErrorMessageMini>
+                            </div>
                             <BasicInput 
                                 type="password" 
                                 name="password_confirmation"
                                 value={password_confirmation}
                                 onChange={onInputChange}
+                                required={true}
                             />
                         </div>
                     </div>
