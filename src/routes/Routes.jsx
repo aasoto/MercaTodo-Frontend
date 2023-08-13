@@ -1,5 +1,5 @@
 import { Routes as ReactRouterDOMRoutes, Route } from "react-router-dom"
-import { OrdersPage, ProductsPage, ReportsPage, ShowcasePage, UsersPage } from "../ui";
+import { CartPage, OrdersPage, ProductsPage, ReportsPage, ShowcasePage, UsersPage } from "../ui";
 import { HasRole } from "../middlewares";
 
 export const Routes = () => {
@@ -28,6 +28,11 @@ export const Routes = () => {
             <Route path="orders" element={
                 <HasRole name={'client'}>
                     <OrdersPage />
+                </HasRole>
+            }/>
+            <Route path="cart" element={
+                <HasRole name={'client'}>
+                    <CartPage />
                 </HasRole>
             }/>
         </ReactRouterDOMRoutes>

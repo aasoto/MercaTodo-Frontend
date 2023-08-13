@@ -7,7 +7,7 @@ import { AuthContext } from "../../../context";
 
 export const LoginPage = () => {
 
-    const { setRole, setToken, setUserId } = useContext(AuthContext);
+    const { setRole, setToken, setUserId, setIsVerified, setName } = useContext(AuthContext);
 
     const [errors, setErrors] = useState({});
 
@@ -26,6 +26,8 @@ export const LoginPage = () => {
                     setRole(resp.data.role);
                     setToken(resp.data.access_token);
                     setUserId(resp.data.user_id);
+                    setIsVerified(resp.data.email_verified_at);
+                    setName(resp.data.name);
 
                     if (resp.data.role == 'admin') {
                         <Navigate to={'/products'} />
