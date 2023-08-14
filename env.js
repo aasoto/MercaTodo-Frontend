@@ -11,7 +11,14 @@ export const ENV = {
         },
         products: {
             index: '/products',
+            store: '/product',
             imagesPath: '/storage/images/products/',
+            categories: {
+                index: '/product_categories',
+            },
+            units: {
+                index: '/units',
+            },
         },
         users: {
             typeDocuments: {
@@ -22,8 +29,8 @@ export const ENV = {
             },
             cities: {
                 index: '/cities',
-            }
-        }
+            },
+        },
     },
     parameters: {
         showcase: {

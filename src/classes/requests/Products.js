@@ -1,5 +1,6 @@
 import axios from "axios";
 import { ResponseService } from "../services";
+import { ENV } from "../../../env";
 
 export class Products {
     async getData(endPoint, token) {
@@ -11,11 +12,64 @@ export class Products {
 
         try {
             const response = await axios.get(endPoint, { headers });
-            console.log(response);
             return ResponseService.responseSuccess(response);
         } catch (error) {
             console.error(error);
             return ResponseService.responseError();
         }
+    }
+
+    async save(
+        name,
+        products_category_id,
+        barcode,
+        description,
+        price,
+        unit,
+        stock,
+        picture_1,
+        picture_2,
+        picture_3,
+        token,
+    ) {
+        const { APIUrl, endPoints } = ENV;
+        const { apiVersion, products } = endPoints;
+
+        let response;
+
+        try {
+            response = await axios.post(`${APIUrl}${apiVersion}${products.store}`,
+            {
+                name,
+                products_category_id,
+                barcode,
+                description,
+                price,
+                unit,
+                stock,
+                picture_1: picture_1,
+                picture_2,
+                picture_3,
+            }, {
+                headers: {
+                    'content-type': 'application/json, multipart/form-data',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            response = {
+                statusText: response.statusText,
+                data: response.data,
+            };
+        } catch (error) {
+            console.error(error);
+            response = {
+                statusText: error.response.statusText,
+                errors: error.response.data,
+            };
+        }
+
+        return response;
+
     }
 }

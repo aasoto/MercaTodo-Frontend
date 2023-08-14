@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { useForm } from "../../../hooks";
-import { BasicInput, BasicLabel, ErrorMessage, ErrorMessageMini, FormTitle } from "../../components";
+import { BasicInput, BasicLabel, ErrorMessage, ErrorMessageMini, FormTitle, MainButton } from "../../components";
 import { MercaTodoLogo } from "../../components/images";
 import { Auth, Generics } from "../../../classes";
 import { ENV } from "../../../../env";
@@ -436,12 +436,9 @@ export const RegisterPage = () => {
                             />
                         </div>
                     </div>
-                    <button
-                        type="submit"
-                        className="bg-gray-800 hover:bg-gray-900 rounded-md w-1/3 mt-4 px-10 py-3 text-white font-semibold hover:font-bold scale-100 hover:scale-105 transition duration-200"
-                    >
+                    <MainButton type="submit">
                         Registrarme
-                    </button>
+                    </MainButton>
                 </form>
             </div>
         </div>

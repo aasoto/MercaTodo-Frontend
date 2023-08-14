@@ -1,10 +1,15 @@
 import axios from "axios";
 
 export class Generics {
-    async getData(endPoint) {
+    async getData(endPoint, token = '') {
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        };
+
         try {
             const response = await axios.get(endPoint, {
-                'Content-Type': 'application/json',
+                headers,
             });
             
             return response.data;

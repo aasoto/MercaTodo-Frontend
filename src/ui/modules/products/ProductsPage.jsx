@@ -4,6 +4,7 @@ import { Products } from "../../../classes";
 import { ENV } from "../../../../env";
 import { Container, PageTitle, Paginate, PrimaryInfoXL } from "../../components";
 import { CheckIcon, XMarkIcon } from "@heroicons/react/24/solid";
+import { NavLink } from "react-router-dom";
 
 export const ProductsPage = () => {
 
@@ -23,7 +24,6 @@ export const ProductsPage = () => {
             pageUrl,
             token,
         ).then( resp => {
-            console.log(resp);
             localStorage.setItem('productLastEndpoint', pageUrl);
             setResponse({ loading: false, ...resp });
         });
@@ -42,9 +42,11 @@ export const ProductsPage = () => {
                     <div className="flex flex-col justify-center items-center gap-5">
                         <div className="w-full sm:w-11/12 bg-white rounded-lg px-2 sm:px-5 md:px-10 py-6 shadow-lg flex flex-col justify-center items-center gap-5">
                             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                                <button className="bg-green-600 hover:bg-green-700 text-white font-bold px-4 py-2 rounded-md shadow-none hover:shadow-sm scale-100 hover:scale-105 transition duration-200">
-                                    Agregar nuevo producto
-                                </button>
+                                <NavLink to={'/products/add'}>
+                                    <button className="bg-green-600 hover:bg-green-700 text-white font-bold px-4 py-2 rounded-md shadow-none hover:shadow-sm scale-100 hover:scale-105 transition duration-200">
+                                        Agregar nuevo producto
+                                    </button>
+                                </NavLink>
                             </div>
                             <table className="w-full">
                                 <thead>

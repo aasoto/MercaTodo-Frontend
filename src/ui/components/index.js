@@ -1,3 +1,4 @@
+export * from './buttons';
 export * from './containers';
 export * from './images';
 export * from './infos';
