@@ -11,7 +11,7 @@ import { Auth } from "../../../classes";
 
 export const Navbar = () => {
 
-    const { role, userId, setRole, setToken, setUserId } = useContext(AuthContext);
+    const { role, userId, name, setRole, setToken, setUserId } = useContext(AuthContext);
 
     const { pathname } = useLocation();
 
@@ -66,9 +66,14 @@ export const Navbar = () => {
                                 <OptionNavbarCart />
                             }
                             { (role === 'admin' || role === 'client') &&
-                                <button onClick={logout} className="text-gray-400 hover:text-gray-500 font-normal hover:font-medium px-4 py-2 hover:bg-gray-100 rounded-md transition duration-200 scale-100 hover:scale-105" title="Logout">
-                                    <ArrowLeftOnRectangleIcon className="w-6 h-6"/>
-                                </button>
+                                <div className="flex justify-center items-center gap-4">
+                                    <span className="text-gray-400 text-sm font-semibold">
+                                        { name }
+                                    </span>
+                                    <button onClick={logout} className="text-gray-400 hover:text-gray-500 font-normal hover:font-medium px-4 py-2 hover:bg-gray-100 rounded-md transition duration-200 scale-100 hover:scale-105" title="Logout">
+                                        <ArrowLeftOnRectangleIcon className="w-6 h-6"/>
+                                    </button>
+                                </div>
                             }
                         </div>
                     </div>

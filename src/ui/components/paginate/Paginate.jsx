@@ -1,7 +1,8 @@
 
 export const Paginate = ({links, setPageUrl, setResponse, parameters}) => {
+
     return (
-        <div className="mt-5 flex justify-center items-center gap-2">
+        <div className="mt-5 flex flex-wrap justify-center items-center gap-2">
             {
                 links.map(link => {
                     return (

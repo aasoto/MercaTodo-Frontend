@@ -1,24 +1,100 @@
-import { useContext, useEffect } from "react"
+import { useContext, useEffect, useState } from "react"
 import { AuthContext } from "../../../context"
 import { Products } from "../../../classes";
 import { ENV } from "../../../../env";
+import { Container, PageTitle, Paginate, PrimaryInfoXL } from "../../components";
+import { CheckIcon, XMarkIcon } from "@heroicons/react/24/solid";
 
 export const ProductsPage = () => {
 
     const { token } = useContext(AuthContext);
-    const { APIUrl, endPoints } = ENV;
+    const { APIUrl, endPoints, parameters } = ENV;
     const { apiVersion, products } = endPoints;
+    
+    const [response, setResponse] = useState({ loading: true });
+    const [pageUrl, setPageUrl] = useState(
+        localStorage.getItem('productLastEndpoint')
+        ? localStorage.getItem('productLastEndpoint')
+        : `${APIUrl}${apiVersion}${products.index}?include=${parameters.products.include}`
+    );
 
     useEffect(() => {
         (new Products()).getData(
-            `${APIUrl}${apiVersion}${products.index}`,
+            pageUrl,
             token,
         ).then( resp => {
             console.log(resp);
+            localStorage.setItem('productLastEndpoint', pageUrl);
+            setResponse({ loading: false, ...resp });
         });
-    }, []);
+    }, [pageUrl]);
 
     return (
-        <div>ProductsPage</div>
+        <Container>
+            <PageTitle>
+                Módulo de gestión de productos
+            </PageTitle>
+            <hr className="border mb-5" />
+            {
+                response.loading
+                    ? <PrimaryInfoXL>Cargando...</PrimaryInfoXL>
+                    : 
+                    <div className="flex flex-col justify-center items-center gap-5">
+                        <div className="w-full sm:w-11/12 bg-white rounded-lg px-2 sm:px-5 md:px-10 py-6 shadow-lg flex flex-col justify-center items-center gap-5">
+                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                                <button className="bg-green-600 hover:bg-green-700 text-white font-bold px-4 py-2 rounded-md shadow-none hover:shadow-sm scale-100 hover:scale-105 transition duration-200">
+                                    Agregar nuevo producto
+                                </button>
+                            </div>
+                            <table className="w-full">
+                                <thead>
+                                    <tr>
+                                        <th className="bg-gray-300 rounded-tl-2xl font-bold px-2 py-5">ID</th>
+                                        <th className="bg-gray-300 font-bold px-2 py-5">Nombre</th>
+                                        <th className="hidden md:block bg-gray-300 font-bold px-2 py-5">Categoría</th>
+                                        <th className="bg-gray-300 font-bold px-2 py-5">Precio</th>
+                                        <th className="bg-gray-300 font-bold px-2 py-5">Unidad</th>
+                                        <th className="hidden md:block bg-gray-300 font-bold px-2 py-5">Disponibilidad</th>
+                                        <th className="bg-gray-300 rounded-tr-2xl font-bold px-2 py-5">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        response.data.data.map(product => {
+                                            return (
+                                                <tr key={product.id} className="border-b border-gray-400">
+                                                    <td className="font-bold pl-4 py-2 text-center">{ product.id }</td>
+                                                    <td className="capitalize pl-4 py-2">{ product.name }</td>
+                                                    <td className="hidden md:block capitalize pl-4 py-2">{ product.product_category.name }</td>
+                                                    <td className="pl-4 py-2 text-right">{ product.price.toLocaleString('es-CO', { style: 'currency', currency: 'COP'}) }</td>
+                                                    <td className="capitalize pl-4 py-2">{ product.product_unit.name }</td>
+                                                    <td className="hidden md:block">
+                                                        { 
+                                                            product.availability
+                                                            ?   <div className="flex justify-center items-center">
+                                                                    <CheckIcon className="text-green-600 w-10 h-10"/> 
+                                                                </div> 
+                                                            :   <div className="flex justify-center items-center">
+                                                                    <XMarkIcon  className="text-red-600 w-10 h-10"/> 
+                                                                </div>
+                                                        }
+                                                    </td>
+                                                    <td></td>
+                                                </tr>
+                                            );
+                                        })
+                                    }
+                                </tbody>
+                            </table>
+                            <Paginate 
+                                links={response.data.meta.links} 
+                                setPageUrl={setPageUrl}
+                                setResponse={setResponse}
+                                parameters={`&include=${parameters.products.include}`}
+                            />
+                        </div>
+                    </div>
+            }
+        </Container>
     )
 }
