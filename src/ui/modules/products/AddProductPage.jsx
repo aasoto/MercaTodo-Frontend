@@ -27,6 +27,8 @@ export const AddProductPage = () => {
     const [picture3Error, setPicture3Error] = useState(false);
 
     const [errors, setErrors] = useState({});
+    const [alert, setAlert] = useState(false);
+    const [showAlert, setShowAlert] = useState(false);
 
     const {
         name,
@@ -181,6 +183,11 @@ export const AddProductPage = () => {
                     setPicture1Charged(false);
                     setPicture2Charged(false);
                     setPicture3Charged(false);
+                    setAlert(true);
+                    setShowAlert(true);
+                    setTimeout(() => {
+                        setShowAlert(false);
+                    }, 5000);
                     break;
             }
         });
@@ -189,6 +196,12 @@ export const AddProductPage = () => {
     return (
         <>
             <Container>
+                {
+                    alert &&
+                    <div className={`fixed bottom-4 right-4 animate__animated ${ showAlert ? "animate__fadeInRight" : "animate__fadeOutRight" } bg-green-600/60 text-white font-semibold rounded-md px-5 py-3`}>
+                        Guardado correctamente
+                    </div>
+                }
                 <h3 className="ml-10 mb-5 text-xl font-semibold">
                     Agregar nuevo producto
                 </h3>
