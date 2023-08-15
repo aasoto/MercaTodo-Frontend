@@ -178,6 +178,9 @@ export const AddProductPage = () => {
                     break;
                 case 'Created':
                     onResetForm();
+                    setPicture1Charged(false);
+                    setPicture2Charged(false);
+                    setPicture3Charged(false);
                     break;
             }
         });
@@ -331,7 +334,7 @@ export const AddProductPage = () => {
                                     </div>
                                     <CKEditor
                                         editor={ ClassicEditor }
-                                        value={ description }
+                                        data={ description }
                                         onChange={ ( event, editor ) => {
                                             const eventGeneric = {
                                                 target: {
