@@ -3,7 +3,7 @@ import { AuthContext } from "../../../context"
 import { Products } from "../../../classes";
 import { ENV } from "../../../../env";
 import { Container, PageTitle, Paginate, PrimaryInfoXL } from "../../components";
-import { CheckIcon, XMarkIcon } from "@heroicons/react/24/solid";
+import { CheckIcon, EyeIcon, PencilSquareIcon, TrashIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import { NavLink } from "react-router-dom";
 
 export const ProductsPage = () => {
@@ -51,13 +51,27 @@ export const ProductsPage = () => {
                             <table className="w-full">
                                 <thead>
                                     <tr>
-                                        <th className="bg-gray-300 rounded-tl-2xl font-bold px-2 py-5">ID</th>
-                                        <th className="bg-gray-300 font-bold px-2 py-5">Nombre</th>
-                                        <th className="hidden md:block bg-gray-300 font-bold px-2 py-5">Categoría</th>
-                                        <th className="bg-gray-300 font-bold px-2 py-5">Precio</th>
-                                        <th className="bg-gray-300 font-bold px-2 py-5">Unidad</th>
-                                        <th className="hidden md:block bg-gray-300 font-bold px-2 py-5">Disponibilidad</th>
-                                        <th className="bg-gray-300 rounded-tr-2xl font-bold px-2 py-5">Acciones</th>
+                                        <th className="bg-gray-300 rounded-tl-2xl font-bold px-2 py-5">
+                                            ID
+                                        </th>
+                                        <th className="bg-gray-300 font-bold px-2 py-5">
+                                            Nombre
+                                        </th>
+                                        <th className="hidden md:block bg-gray-300 font-bold px-2 py-5">
+                                            Categoría
+                                        </th>
+                                        <th className="bg-gray-300 font-bold px-2 py-5">
+                                            Precio
+                                        </th>
+                                        <th className="bg-gray-300 font-bold px-2 py-5">
+                                            Unidad
+                                        </th>
+                                        <th className="hidden md:block bg-gray-300 font-bold px-2 py-5">
+                                            Disponibilidad
+                                        </th>
+                                        <th className="bg-gray-300 rounded-tr-2xl font-bold px-2 py-5">
+                                            Acciones
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -65,11 +79,21 @@ export const ProductsPage = () => {
                                         response.data.data.map(product => {
                                             return (
                                                 <tr key={product.id} className="border-b border-gray-400">
-                                                    <td className="font-bold pl-4 py-2 text-center">{ product.id }</td>
-                                                    <td className="capitalize pl-4 py-2">{ product.name }</td>
-                                                    <td className="hidden md:block capitalize pl-4 py-2">{ product.product_category.name }</td>
-                                                    <td className="pl-4 py-2 text-right">{ product.price.toLocaleString('es-CO', { style: 'currency', currency: 'COP'}) }</td>
-                                                    <td className="capitalize pl-4 py-2">{ product.product_unit.name }</td>
+                                                    <td className="font-bold pl-4 py-2 text-center">
+                                                        { product.id }
+                                                    </td>
+                                                    <td className="capitalize pl-4 py-2">
+                                                        { product.name }
+                                                    </td>
+                                                    <td className="hidden md:block capitalize pl-4 py-2">
+                                                        { product.product_category.name }
+                                                    </td>
+                                                    <td className="pl-4 py-2 text-right">
+                                                        { product.price.toLocaleString('es-CO', { style: 'currency', currency: 'COP'}) }
+                                                    </td>
+                                                    <td className="capitalize pl-4 py-2">
+                                                        { product.product_unit.name }
+                                                    </td>
                                                     <td className="hidden md:block">
                                                         { 
                                                             product.availability
@@ -81,7 +105,18 @@ export const ProductsPage = () => {
                                                                 </div>
                                                         }
                                                     </td>
-                                                    <td></td>
+                                                    <td>
+                                                        <div className="flex flex-col md:flex-row justify-center items-center gap-3 my-2 md:my-0">
+                                                            <NavLink to={`/products/edit/${product.slug}`}>
+                                                                <button className="bg-yellow-400 hover:bg-yellow-500 text-black rounded-md px-4 py-2 duration-200 transition">
+                                                                    <PencilSquareIcon className="w-4 h-4"/>
+                                                                </button>
+                                                            </NavLink>
+                                                            <button className="bg-red-600 hover:bg-red-700 text-white rounded-md px-4 py-2 duration-200 transition">
+                                                                <TrashIcon className="w-4 h-4"/>
+                                                            </button>
+                                                        </div>
+                                                    </td>
                                                 </tr>
                                             );
                                         })

@@ -12,6 +12,7 @@ export const ENV = {
         products: {
             index: '/products',
             store: '/product',
+            show: '/product',
             imagesPath: '/storage/images/products/',
             categories: {
                 index: '/product_categories',
