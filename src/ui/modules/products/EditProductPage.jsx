@@ -35,6 +35,7 @@ export const EditProductPage = () => {
     const [errors, setErrors] = useState({});
 
     const {
+        id,
         name,
         products_category_id,
         barcode,
@@ -49,6 +50,7 @@ export const EditProductPage = () => {
         onInputChange,
         onUpdateForm,
     } = useForm({
+        id: '',
         name: '',
         products_category_id: '',
         barcode: '',
@@ -84,6 +86,7 @@ export const EditProductPage = () => {
         ).then(resp => {
                 const data = resp.data.data;
                 onUpdateForm({
+                    id: data.id,
                     name: data.name,
                     products_category_id: data.products_category_id,
                     barcode: data.barcode,
@@ -101,17 +104,17 @@ export const EditProductPage = () => {
 
     useEffect(() => {
         if (picture_1.type !== 'image/jpeg' && picture_1.type !== 'image/png') {
-            if (picture_1) {
+            if (typeof picture_1 === 'string') {
                 if(picture_1.includes(APIUrl)) {
                     if (picture_1 !== `${APIUrl}${products.imagesPath}`) {
                         document.getElementById('show_picture_1').src = picture_1;
                         setPicture1Charged(true);
                         setPicture1Error(false);
                     }
-                } else {
-                    setPicture1Charged(false);
-                    setPicture1Error(true);
                 }
+            } else {
+                setPicture1Charged(false);
+                setPicture1Error(true);
             }
             onInputChange({
                 target: {
@@ -134,17 +137,17 @@ export const EditProductPage = () => {
 
     useEffect(() => {
         if (picture_2.type !== 'image/jpeg' && picture_2.type !== 'image/png') {
-            if (picture_2) {
+            if (typeof picture_2 === 'string') {
                 if(picture_2.includes(APIUrl)) {
                     if (picture_2 !== `${APIUrl}${products.imagesPath}`) {
                         document.getElementById('show_picture_2').src = picture_2;
                         setPicture2Charged(true);
                         setPicture2Error(false);
                     }
-                } else {
-                    setPicture2Charged(false);
-                    setPicture2Error(true);
                 }
+            } else {
+                setPicture2Charged(false);
+                setPicture2Error(true);
             }
             onInputChange({
                 target: {
@@ -167,17 +170,17 @@ export const EditProductPage = () => {
 
     useEffect(() => {
         if (picture_3.type !== 'image/jpeg' && picture_3.type !== 'image/png') {
-            if (picture_3) {
+            if (typeof picture_3 === 'string') {
                 if(picture_3.includes(APIUrl)) {
                     if (picture_3 !== `${APIUrl}${products.imagesPath}`) {
                         document.getElementById('show_picture_3').src = picture_3;
                         setPicture3Charged(true);
                         setPicture3Error(false);
                     }
-                } else {
-                    setPicture3Charged(false);
-                    setPicture3Error(true);
                 }
+            } else {
+                setPicture3Charged(false);
+                setPicture3Error(true);
             }
             onInputChange({
                 target: {
@@ -209,6 +212,35 @@ export const EditProductPage = () => {
 
     const onSubmit = (event) => {
         event.preventDefault();
+
+        (new Products()).update(
+            id,
+            name,
+            products_category_id,
+            barcode,
+            description,
+            price,
+            unit,
+            stock,
+            picture_1,
+            picture_2,
+            picture_3,
+            availability,
+            token,
+        ).then( resp => {
+            switch (resp.statusText) {
+                case 'Unprocessable Content':
+                    setErrors(resp.errors);
+                    break;
+                case 'OK':
+                    setAlert(true);
+                    setShowAlert(true);
+                    setTimeout(() => {
+                        setShowAlert(false);
+                    }, 5000);
+                    break;
+            }
+        });
     }
 
     return (
@@ -216,7 +248,7 @@ export const EditProductPage = () => {
             {
                 alert &&
                 <div className={`fixed bottom-4 right-4 animate__animated ${ showAlert ? "animate__fadeInRight" : "animate__fadeOutRight" } bg-green-600/60 text-white font-semibold rounded-md px-5 py-3`}>
-                    Guardado correctamente
+                    Actualizado correctamente
                 </div>
             }
             <h3 className="ml-10 mb-5 text-xl font-semibold">

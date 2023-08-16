@@ -4,7 +4,7 @@ import { Products } from "../../../classes";
 import { ENV } from "../../../../env";
 import { Container, PageTitle, Paginate, PrimaryInfoXL } from "../../components";
 import { CheckIcon, EyeIcon, PencilSquareIcon, TrashIcon, XMarkIcon } from "@heroicons/react/24/solid";
-import { NavLink } from "react-router-dom";
+import { NavLink, Navigate } from "react-router-dom";
 
 export const ProductsPage = () => {
 
@@ -12,6 +12,9 @@ export const ProductsPage = () => {
     const { APIUrl, endPoints, parameters } = ENV;
     const { apiVersion, products } = endPoints;
     
+    const [alert, setAlert] = useState(false);
+    const [showAlert, setShowAlert] = useState(false);
+
     const [response, setResponse] = useState({ loading: true });
     const [pageUrl, setPageUrl] = useState(
         localStorage.getItem('productLastEndpoint')
@@ -29,8 +32,36 @@ export const ProductsPage = () => {
         });
     }, [pageUrl]);
 
+    const onDeleteProduct = (slug) => {
+        (new Products()).delete(slug, token)
+            .then(resp => {
+                switch (resp.statusText) {
+                    case 'OK':
+                        setAlert(true);
+                        setShowAlert(true);
+                        (new Products()).getData(
+                            pageUrl,
+                            token,
+                        ).then( resp => {
+                            localStorage.setItem('productLastEndpoint', pageUrl);
+                            setResponse({ loading: false, ...resp });
+                        });
+                        setTimeout(() => {
+                            setShowAlert(false);
+                        }, 5000);
+                        break;
+                }
+            });
+    }
+
     return (
         <Container>
+            {
+                alert &&
+                <div className={`fixed bottom-4 right-4 animate__animated ${ showAlert ? "animate__fadeInRight" : "animate__fadeOutRight" } bg-red-600/60 text-white font-semibold rounded-md px-5 py-3`}>
+                    Registro eliminado correctamente
+                </div>
+            }
             <PageTitle>
                 Módulo de gestión de productos
             </PageTitle>
@@ -112,7 +143,7 @@ export const ProductsPage = () => {
                                                                     <PencilSquareIcon className="w-4 h-4"/>
                                                                 </button>
                                                             </NavLink>
-                                                            <button className="bg-red-600 hover:bg-red-700 text-white rounded-md px-4 py-2 duration-200 transition">
+                                                            <button onClick={() => onDeleteProduct(product.slug)} className="bg-red-600 hover:bg-red-700 text-white rounded-md px-4 py-2 duration-200 transition">
                                                                 <TrashIcon className="w-4 h-4"/>
                                                             </button>
                                                         </div>
