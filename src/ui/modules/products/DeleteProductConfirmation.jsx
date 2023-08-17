@@ -1,13 +1,17 @@
 import { QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
 import { Products } from "../../../classes";
 import { AuthContext } from "../../../context";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 
 export const DeleteProductConfirmation = ({ slug, setDeleteConfirmation, setAlert, setShowAlert, setResponse, pageUrl }) => {
 
     const { token } = useContext(AuthContext);
+    const [disableDeleteBtn, setDisableDeleteBtn] = useState(false);
 
     const onDeleteProduct = () => {
+
+        setDisableDeleteBtn(true);
+
         (new Products()).delete(slug, token)
             .then(resp => {
                 switch (resp.statusText) {
@@ -21,7 +25,8 @@ export const DeleteProductConfirmation = ({ slug, setDeleteConfirmation, setAler
                             localStorage.setItem('productLastEndpoint', pageUrl);
                             setResponse({ loading: false, ...resp });
                         });
-                        setDeleteConfirmation(false)
+                        setDisableDeleteBtn(false);
+                        setDeleteConfirmation(false);
                         setTimeout(() => {
                             setShowAlert(false);
                         }, 5000);
@@ -43,7 +48,8 @@ export const DeleteProductConfirmation = ({ slug, setDeleteConfirmation, setAler
                 <div className="flex justify-center items-center gap-5">
                     <button 
                         onClick={onDeleteProduct}
-                        className="bg-gray-300 dark:bg-gray-500 hover:bg-gray-400 dark:hover:bg-gray-600 text-black dark:text-white px-5 py-2 rounded shadow scale-100 hover:scale-105 transition duration-200"
+                        className={`bg-gray-300 dark:bg-gray-500 text-black dark:text-white px-5 py-2 rounded shadow scale-100 ${disableDeleteBtn ? 'cursor-not-allowed' : 'hover:bg-gray-400 dark:hover:bg-gray-600 hover:scale-105'} transition duration-200`}
+                        disabled={disableDeleteBtn}
                     >
                         Eliminar
                     </button>
