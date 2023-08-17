@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { BasicInput, BasicLabel, Container, DangerInfoMini, ErrorMessage, ErrorMessageMini, MainButton } from "../../components";
+import { BasicInput, BasicLabel, Container, DangerInfoMini, ErrorMessage, ErrorMessageMini, LoadingAlert, MainButton } from "../../components";
 import { useParams } from "react-router-dom";
 import { Generics, Products } from "../../../classes";
 import { ENV } from "../../../../env";
@@ -32,6 +32,7 @@ export const EditProductPage = () => {
     const [picture3Charged, setPicture3Charged] = useState(false);
     const [picture3Error, setPicture3Error] = useState(false);
 
+    const [makingRequest, setMakingRequest] = useState(false);
     const [errors, setErrors] = useState({});
 
     const {
@@ -66,6 +67,8 @@ export const EditProductPage = () => {
 
     useEffect(() => {
 
+        setMakingRequest(true);
+
         const genericRequest = new Generics();
 
         // Get products categories
@@ -99,6 +102,7 @@ export const EditProductPage = () => {
                     picture_3: data.picture_3,
                     availability: data.availability,
                 });
+                setMakingRequest(false);
             });
     }, []);
 
@@ -244,297 +248,302 @@ export const EditProductPage = () => {
     }
 
     return (
-        <Container>
+        <>
             {
-                alert &&
-                <div className={`fixed bottom-4 right-4 animate__animated ${ showAlert ? "animate__fadeInRight" : "animate__fadeOutRight" } bg-green-600/60 text-white font-semibold rounded-md px-5 py-3`}>
-                    Actualizado correctamente
-                </div>
+                <LoadingAlert makingRequest={makingRequest}/>
             }
-            <h3 className="ml-10 mb-5 text-xl font-semibold">
-                Actualizar producto
-            </h3>
-            <div className="flex flex-col justify-center items-center gap-5">
-                <div className="w-full sm:w-11/12 bg-white rounded-lg px-2 sm:px-5 md:px-10 py-6 shadow-lg flex flex-col justify-center items-center gap-5">
-                    <form onSubmit={onSubmit} className="flex flex-col justify-center items-center gap-4 w-full">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 w-full">
-                            <div className="col-span-1 md:col-span-2">
-                            <ErrorMessage>{errors.message}</ErrorMessage>
-                            </div>
-                            <div className="col-span-1">
-                                <div className="flex justify-between items-center gap-2">
-                                    <BasicLabel htmlFor="name">
-                                        Nombre
-                                    </BasicLabel>
-                                    <ErrorMessageMini>
-                                        {errors.errors?.name}
-                                    </ErrorMessageMini>
+            <Container>
+                {
+                    alert &&
+                    <div className={`fixed bottom-4 right-4 animate__animated ${ showAlert ? "animate__fadeInRight" : "animate__fadeOutRight" } bg-green-600/60 text-white font-semibold rounded-md px-5 py-3`}>
+                        Actualizado correctamente
+                    </div>
+                }
+                <h3 className="ml-10 mb-5 text-xl font-semibold">
+                    Actualizar producto
+                </h3>
+                <div className="flex flex-col justify-center items-center gap-5">
+                    <div className="w-full sm:w-11/12 bg-white rounded-lg px-2 sm:px-5 md:px-10 py-6 shadow-lg flex flex-col justify-center items-center gap-5">
+                        <form onSubmit={onSubmit} className="flex flex-col justify-center items-center gap-4 w-full">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 w-full">
+                                <div className="col-span-1 md:col-span-2">
+                                <ErrorMessage>{errors.message}</ErrorMessage>
                                 </div>
-                                <BasicInput 
-                                    type="text" 
-                                    name="name"
-                                    value={name}
-                                    onChange={onInputChange}
-                                    // required={true}
-                                />
-                            </div>
-                            <div className="col-span-1">
-                                <div className="flex justify-between items-center gap-2">
-                                    <BasicLabel htmlFor="products_category_id">
-                                        Categoría del producto
-                                    </BasicLabel>
-                                    <ErrorMessageMini>
-                                        {errors.errors?.products_category_id}
-                                    </ErrorMessageMini>
+                                <div className="col-span-1">
+                                    <div className="flex justify-between items-center gap-2">
+                                        <BasicLabel htmlFor="name">
+                                            Nombre
+                                        </BasicLabel>
+                                        <ErrorMessageMini>
+                                            {errors.errors?.name}
+                                        </ErrorMessageMini>
+                                    </div>
+                                    <BasicInput 
+                                        type="text" 
+                                        name="name"
+                                        value={name}
+                                        onChange={onInputChange}
+                                        // required={true}
+                                    />
                                 </div>
-                                <select
-                                    name="products_category_id"
-                                    className="border border-gray-500 rounded-md px-5 py-2 placeholder:italic w-full"
-                                    value={products_category_id}
-                                    onChange={onInputChange}
-                                    // required
-                                >
-                                    <option value="">Seleccionar...</option>
-                                    {   categories.length != 0 &&
-                                        categories.map(category => {
-                                            return (
-                                                <option key={category.id} value={category.id}>
-                                                    {category.name}
-                                                </option>
-                                            );
-                                        })
-                                    }
-                                </select>
-                            </div>
-                            <div className="col-span-1">
-                                <div className="flex justify-between items-center gap-2">
-                                    <BasicLabel htmlFor="barcode">
-                                        Código de barras
-                                    </BasicLabel>
-                                    <ErrorMessageMini>
-                                        {errors.errors?.barcode}
-                                    </ErrorMessageMini>
-                                </div>
-                                <BasicInput 
-                                    type="text" 
-                                    name="barcode"
-                                    value={barcode}
-                                    onChange={onInputChange}
-                                    // required={true}
-                                />
-                            </div>
-                            <div className="col-span-1">
-                                <div className="flex justify-between items-center gap-2">
-                                    <BasicLabel htmlFor="price">
-                                        Precio
-                                    </BasicLabel>
-                                    <ErrorMessageMini>
-                                        {errors.errors?.price}
-                                    </ErrorMessageMini>
-                                </div>
-                                <BasicInput 
-                                    type="number" 
-                                    name="price"
-                                    value={price}
-                                    onChange={onInputChange}
-                                    // required={true}
-                                />
-                            </div>
-                            <div className="col-span-1">
-                                <div className="flex justify-between items-center gap-2">
-                                    <BasicLabel htmlFor="unit">
-                                        Unidad
-                                    </BasicLabel>
-                                    <ErrorMessageMini>
-                                        {errors.errors?.unit}
-                                    </ErrorMessageMini>
-                                </div>
-                                <select
-                                    name="unit"
-                                    className="border border-gray-500 rounded-md px-5 py-2 placeholder:italic w-full"
-                                    value={unit}
-                                    onChange={onInputChange}
-                                    // required
-                                >
-                                    <option value="">Seleccionar...</option>
-                                    {   units.length != 0 &&
-                                        units.map(unit => {
-                                            return (
-                                                <option key={unit.id} value={unit.code}>
-                                                    {unit.name}
-                                                </option>
-                                            );
-                                        })
-                                    }
-                                </select>
-                            </div>
-                            <div className="col-span-1">
-                                <div className="flex justify-between items-center gap-2">
-                                    <BasicLabel htmlFor="stock">
-                                        Stock
-                                    </BasicLabel>
-                                    <ErrorMessageMini>
-                                        {errors.errors?.stock}
-                                    </ErrorMessageMini>
-                                </div>
-                                <BasicInput 
-                                    type="number" 
-                                    name="stock"
-                                    value={stock}
-                                    onChange={onInputChange}
-                                    // required={true}
-                                />
-                            </div>
-                            <div className="col-span-1 md:col-span-2">
-                                <div className="flex justify-between items-center gap-2">
-                                    <BasicLabel htmlFor="">
-                                        Descripción
-                                    </BasicLabel>
-                                    <ErrorMessageMini>
-                                        {errors.errors?.description}
-                                    </ErrorMessageMini>
-                                </div>
-                                <CKEditor
-                                    editor={ ClassicEditor }
-                                    data={ description ? description : '' }
-                                    onChange={ ( event, editor ) => {
-                                        const eventGeneric = {
-                                            target: {
-                                                name: 'description',
-                                                value: editor.getData(),
-                                            }
+                                <div className="col-span-1">
+                                    <div className="flex justify-between items-center gap-2">
+                                        <BasicLabel htmlFor="products_category_id">
+                                            Categoría del producto
+                                        </BasicLabel>
+                                        <ErrorMessageMini>
+                                            {errors.errors?.products_category_id}
+                                        </ErrorMessageMini>
+                                    </div>
+                                    <select
+                                        name="products_category_id"
+                                        className="border border-gray-500 rounded-md px-5 py-2 placeholder:italic w-full"
+                                        value={products_category_id}
+                                        onChange={onInputChange}
+                                        // required
+                                    >
+                                        <option value="">Seleccionar...</option>
+                                        {   categories.length != 0 &&
+                                            categories.map(category => {
+                                                return (
+                                                    <option key={category.id} value={category.id}>
+                                                        {category.name}
+                                                    </option>
+                                                );
+                                            })
                                         }
-                                        onInputChange(eventGeneric);
-                                    } }
-                                />
-                            </div>
-                            <div className="col-span-1">
-                                <div className="flex justify-between items-center gap-2">
-                                    <BasicLabel htmlFor="picture_1">
-                                        Foto principal
-                                    </BasicLabel>
-                                    <ErrorMessageMini>
-                                        {errors.errors?.picture_1}
-                                    </ErrorMessageMini>
+                                    </select>
                                 </div>
-                                <input
-                                    type="file"
-                                    name="picture_1"
-                                    id="picture_1"
-                                    onChange={onFileChange}
-                                    className="block w-full border border-gray-200 shadow-sm rounded-md text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400
-                                    file:bg-transparent file:border-0
-                                    file:bg-gray-200 file:mr-4
-                                    file:py-3 file:px-4
-                                    file:cursor-pointer
-                                    dark:file:bg-gray-700 dark:file:text-gray-400
-                                    cursor-pointer"
-                                    // required
-                                />
-                                <img
-                                    id="show_picture_1"
-                                    className={
-                                        picture1Charged 
-                                        ? "block mt-2 mx-auto w-48 h-48 object-cover object-center"
-                                        : "hidden mt-2 mx-auto w-48 h-48 object-cover object-center"
-                                    }
-                                    src=""
-                                    alt="product_image_1"
-                                ></img>
-                                {
-                                    picture1Error &&
-                                    <DangerInfoMini>
-                                        Solo puede adjuntar imagenes de tipo JPG y PNG
-                                    </DangerInfoMini>
-                                }
-                            </div>
-                            <div className="col-span-1">
-                                <div className="flex justify-between items-center gap-2">
-                                    <BasicLabel htmlFor="picture_2">
-                                        Foto alternativa 1
-                                    </BasicLabel>
-                                    <ErrorMessageMini>
-                                        {errors.errors?.picture_2}
-                                    </ErrorMessageMini>
+                                <div className="col-span-1">
+                                    <div className="flex justify-between items-center gap-2">
+                                        <BasicLabel htmlFor="barcode">
+                                            Código de barras
+                                        </BasicLabel>
+                                        <ErrorMessageMini>
+                                            {errors.errors?.barcode}
+                                        </ErrorMessageMini>
+                                    </div>
+                                    <BasicInput 
+                                        type="text" 
+                                        name="barcode"
+                                        value={barcode}
+                                        onChange={onInputChange}
+                                        // required={true}
+                                    />
                                 </div>
-                                <input
-                                    type="file"
-                                    name="picture_2"
-                                    id="picture_2"
-                                    onChange={onFileChange}
-                                    className="block w-full border border-gray-200 shadow-sm rounded-md text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400
-                                    file:bg-transparent file:border-0
-                                    file:bg-gray-200 file:mr-4
-                                    file:py-3 file:px-4
-                                    file:cursor-pointer
-                                    dark:file:bg-gray-700 dark:file:text-gray-400
-                                    cursor-pointer"
-                                    // required
-                                />
-                                <img
-                                    id="show_picture_2"
-                                    className={
-                                        picture2Charged 
-                                        ? "block mt-2 mx-auto w-48 h-48 object-cover object-center"
-                                        : "hidden mt-2 mx-auto w-48 h-48 object-cover object-center"
-                                    }
-                                    src=""
-                                    alt="product_image_2"
-                                ></img>
-                                {
-                                    picture2Error &&
-                                    <DangerInfoMini>
-                                        Solo puede adjuntar imagenes de tipo JPG y PNG
-                                    </DangerInfoMini>
-                                }
-                            </div>
-                            <div className="col-span-1">
-                                <div className="flex justify-between items-center gap-2">
-                                    <BasicLabel htmlFor="picture_3">
-                                        Foto alternativa 2
-                                    </BasicLabel>
-                                    <ErrorMessageMini>
-                                        {errors.errors?.picture_3}
-                                    </ErrorMessageMini>
+                                <div className="col-span-1">
+                                    <div className="flex justify-between items-center gap-2">
+                                        <BasicLabel htmlFor="price">
+                                            Precio
+                                        </BasicLabel>
+                                        <ErrorMessageMini>
+                                            {errors.errors?.price}
+                                        </ErrorMessageMini>
+                                    </div>
+                                    <BasicInput 
+                                        type="number" 
+                                        name="price"
+                                        value={price}
+                                        onChange={onInputChange}
+                                        // required={true}
+                                    />
                                 </div>
-                                <input
-                                    type="file"
-                                    name="picture_3"
-                                    id="picture_3"
-                                    onChange={onFileChange}
-                                    className="block w-full border border-gray-200 shadow-sm rounded-md text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400
-                                    file:bg-transparent file:border-0
-                                    file:bg-gray-200 file:mr-4
-                                    file:py-3 file:px-4
-                                    file:cursor-pointer
-                                    dark:file:bg-gray-700 dark:file:text-gray-400
-                                    cursor-pointer"
-                                    // required
-                                />
-                                <img
-                                    id="show_picture_3"
-                                    className={
-                                        picture3Charged 
-                                        ? "block mt-2 mx-auto w-48 h-48 object-cover object-center"
-                                        : "hidden mt-2 mx-auto w-48 h-48 object-cover object-center"
+                                <div className="col-span-1">
+                                    <div className="flex justify-between items-center gap-2">
+                                        <BasicLabel htmlFor="unit">
+                                            Unidad
+                                        </BasicLabel>
+                                        <ErrorMessageMini>
+                                            {errors.errors?.unit}
+                                        </ErrorMessageMini>
+                                    </div>
+                                    <select
+                                        name="unit"
+                                        className="border border-gray-500 rounded-md px-5 py-2 placeholder:italic w-full"
+                                        value={unit}
+                                        onChange={onInputChange}
+                                        // required
+                                    >
+                                        <option value="">Seleccionar...</option>
+                                        {   units.length != 0 &&
+                                            units.map(unit => {
+                                                return (
+                                                    <option key={unit.id} value={unit.code}>
+                                                        {unit.name}
+                                                    </option>
+                                                );
+                                            })
+                                        }
+                                    </select>
+                                </div>
+                                <div className="col-span-1">
+                                    <div className="flex justify-between items-center gap-2">
+                                        <BasicLabel htmlFor="stock">
+                                            Stock
+                                        </BasicLabel>
+                                        <ErrorMessageMini>
+                                            {errors.errors?.stock}
+                                        </ErrorMessageMini>
+                                    </div>
+                                    <BasicInput 
+                                        type="number" 
+                                        name="stock"
+                                        value={stock}
+                                        onChange={onInputChange}
+                                        // required={true}
+                                    />
+                                </div>
+                                <div className="col-span-1 md:col-span-2">
+                                    <div className="flex justify-between items-center gap-2">
+                                        <BasicLabel htmlFor="">
+                                            Descripción
+                                        </BasicLabel>
+                                        <ErrorMessageMini>
+                                            {errors.errors?.description}
+                                        </ErrorMessageMini>
+                                    </div>
+                                    <CKEditor
+                                        editor={ ClassicEditor }
+                                        data={ description ? description : '' }
+                                        onChange={ ( event, editor ) => {
+                                            const eventGeneric = {
+                                                target: {
+                                                    name: 'description',
+                                                    value: editor.getData(),
+                                                }
+                                            }
+                                            onInputChange(eventGeneric);
+                                        } }
+                                    />
+                                </div>
+                                <div className="col-span-1">
+                                    <div className="flex justify-between items-center gap-2">
+                                        <BasicLabel htmlFor="picture_1">
+                                            Foto principal
+                                        </BasicLabel>
+                                        <ErrorMessageMini>
+                                            {errors.errors?.picture_1}
+                                        </ErrorMessageMini>
+                                    </div>
+                                    <input
+                                        type="file"
+                                        name="picture_1"
+                                        id="picture_1"
+                                        onChange={onFileChange}
+                                        className="block w-full border border-gray-200 shadow-sm rounded-md text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400
+                                        file:bg-transparent file:border-0
+                                        file:bg-gray-200 file:mr-4
+                                        file:py-3 file:px-4
+                                        file:cursor-pointer
+                                        dark:file:bg-gray-700 dark:file:text-gray-400
+                                        cursor-pointer"
+                                        // required
+                                    />
+                                    <img
+                                        id="show_picture_1"
+                                        className={
+                                            picture1Charged 
+                                            ? "block mt-2 mx-auto w-48 h-48 object-cover object-center"
+                                            : "hidden mt-2 mx-auto w-48 h-48 object-cover object-center"
+                                        }
+                                        src=""
+                                        alt="product_image_1"
+                                    ></img>
+                                    {
+                                        picture1Error &&
+                                        <DangerInfoMini>
+                                            Solo puede adjuntar imagenes de tipo JPG y PNG
+                                        </DangerInfoMini>
                                     }
-                                    src=""
-                                    alt="product_image_3"
-                                ></img>
-                                {
-                                    picture3Error &&
-                                    <DangerInfoMini>
-                                        Solo puede adjuntar imagenes de tipo JPG y PNG
-                                    </DangerInfoMini>
-                                }
+                                </div>
+                                <div className="col-span-1">
+                                    <div className="flex justify-between items-center gap-2">
+                                        <BasicLabel htmlFor="picture_2">
+                                            Foto alternativa 1
+                                        </BasicLabel>
+                                        <ErrorMessageMini>
+                                            {errors.errors?.picture_2}
+                                        </ErrorMessageMini>
+                                    </div>
+                                    <input
+                                        type="file"
+                                        name="picture_2"
+                                        id="picture_2"
+                                        onChange={onFileChange}
+                                        className="block w-full border border-gray-200 shadow-sm rounded-md text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400
+                                        file:bg-transparent file:border-0
+                                        file:bg-gray-200 file:mr-4
+                                        file:py-3 file:px-4
+                                        file:cursor-pointer
+                                        dark:file:bg-gray-700 dark:file:text-gray-400
+                                        cursor-pointer"
+                                        // required
+                                    />
+                                    <img
+                                        id="show_picture_2"
+                                        className={
+                                            picture2Charged 
+                                            ? "block mt-2 mx-auto w-48 h-48 object-cover object-center"
+                                            : "hidden mt-2 mx-auto w-48 h-48 object-cover object-center"
+                                        }
+                                        src=""
+                                        alt="product_image_2"
+                                    ></img>
+                                    {
+                                        picture2Error &&
+                                        <DangerInfoMini>
+                                            Solo puede adjuntar imagenes de tipo JPG y PNG
+                                        </DangerInfoMini>
+                                    }
+                                </div>
+                                <div className="col-span-1">
+                                    <div className="flex justify-between items-center gap-2">
+                                        <BasicLabel htmlFor="picture_3">
+                                            Foto alternativa 2
+                                        </BasicLabel>
+                                        <ErrorMessageMini>
+                                            {errors.errors?.picture_3}
+                                        </ErrorMessageMini>
+                                    </div>
+                                    <input
+                                        type="file"
+                                        name="picture_3"
+                                        id="picture_3"
+                                        onChange={onFileChange}
+                                        className="block w-full border border-gray-200 shadow-sm rounded-md text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400
+                                        file:bg-transparent file:border-0
+                                        file:bg-gray-200 file:mr-4
+                                        file:py-3 file:px-4
+                                        file:cursor-pointer
+                                        dark:file:bg-gray-700 dark:file:text-gray-400
+                                        cursor-pointer"
+                                        // required
+                                    />
+                                    <img
+                                        id="show_picture_3"
+                                        className={
+                                            picture3Charged 
+                                            ? "block mt-2 mx-auto w-48 h-48 object-cover object-center"
+                                            : "hidden mt-2 mx-auto w-48 h-48 object-cover object-center"
+                                        }
+                                        src=""
+                                        alt="product_image_3"
+                                    ></img>
+                                    {
+                                        picture3Error &&
+                                        <DangerInfoMini>
+                                            Solo puede adjuntar imagenes de tipo JPG y PNG
+                                        </DangerInfoMini>
+                                    }
+                                </div>
                             </div>
-                        </div>
-                        <MainButton type="submit">
-                            Guardar
-                        </MainButton>
-                    </form>
+                            <MainButton type="submit">
+                                Guardar
+                            </MainButton>
+                        </form>
+                    </div>
                 </div>
-            </div>
-        </Container>
+            </Container>
+        </>
     );
 }
