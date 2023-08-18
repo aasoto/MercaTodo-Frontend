@@ -25,6 +25,7 @@ export const ENV = {
             },
         },
         users: {
+            index: '/users',
             typeDocuments: {
                 index: '/type_documents',
             },
@@ -42,7 +43,10 @@ export const ENV = {
         },
         products: {
             include: 'category,product_unit',
-        }
+        },
+        users: {
+            include: 'typeDocument,state,city',
+        },
     }
 
 }
