@@ -26,7 +26,6 @@ export const UsersPage = () => {
         ).then( resp => {
             localStorage.setItem('usersLastEndpoint', pageUrl);
             setResponse({ loading: false, ...resp });
-            console.log(resp);
         });
     }, [pageUrl]);
 
@@ -43,9 +42,9 @@ export const UsersPage = () => {
                     <div className="flex flex-col justify-center items-center gap-5">
                         <div className="w-full sm:w-11/12 bg-white rounded-lg px-2 sm:px-5 md:px-10 py-6 shadow-lg flex flex-col justify-center items-center gap-5">
                             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                                <NavLink to={'/products/add'}>
+                                <NavLink to={'/users/register/admin'}>
                                     <button className="bg-green-600 hover:bg-green-700 text-white font-bold px-4 py-2 rounded-md shadow-none hover:shadow-sm scale-100 hover:scale-105 transition duration-200">
-                                        Agregar nuevo producto
+                                        Agregar nuevo administrador
                                     </button>
                                 </NavLink>
                             </div>
@@ -104,15 +103,16 @@ export const UsersPage = () => {
                                                         { user.city.name }
                                                     </td>
                                                     <td className="hidden md:block">
+                                                        <div className="flex justify-center items-center gap-3 capitalize">
                                                         { 
                                                             user.enabled
-                                                            ?   <div className="flex justify-center items-center">
-                                                                    <CheckIcon className="text-green-600 w-10 h-10"/> 
-                                                                </div> 
-                                                            :   <div className="flex justify-center items-center">
-                                                                    <XMarkIcon  className="text-red-600 w-10 h-10"/> 
-                                                                </div>
+                                                            ? <span className="text-green-600"> ● </span>
+                                                            : <span className="text-red-600"> ● </span>
                                                         }
+                                                        {
+                                                            user.role[0]
+                                                        }
+                                                        </div>
                                                     </td>
                                                     <td>
                                                         <div className="flex flex-col md:flex-row justify-center items-center gap-3 my-2 md:my-0">

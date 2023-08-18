@@ -26,6 +26,7 @@ export const ENV = {
         },
         users: {
             index: '/users',
+            registerAdmin: '/register/admin',
             typeDocuments: {
                 index: '/type_documents',
             },

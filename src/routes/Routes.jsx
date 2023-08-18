@@ -1,5 +1,5 @@
 import { Routes as ReactRouterDOMRoutes, Route } from "react-router-dom"
-import { AddProductPage, CartPage, EditProductPage, OrdersPage, ProductsPage, ReportsPage, ShowcasePage, UsersPage } from "../ui";
+import { AddAdminPage, AddProductPage, CartPage, EditProductPage, OrdersPage, ProductsPage, ReportsPage, ShowcasePage, UsersPage } from "../ui";
 import { HasRole } from "../middlewares";
 
 export const Routes = () => {
@@ -8,6 +8,11 @@ export const Routes = () => {
             <Route path="users" element={
                 <HasRole name={'admin'}>
                     <UsersPage />
+                </HasRole>
+            } />
+            <Route path="users/register/admin" element={
+                <HasRole name={'admin'}>
+                    <AddAdminPage />
                 </HasRole>
             } />
             <Route path="products" element={
