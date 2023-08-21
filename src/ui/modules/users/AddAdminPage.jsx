@@ -88,7 +88,10 @@ export const AddAdminPage = () => {
 
         if (state_id) {
             setFilteredCities(cities.filter(city => city.state_id == state_id));
+        } else {
+            setFilteredCities([]);
         }
+        
     }, [state_id]);
 
     const onSubmit = (event) => {

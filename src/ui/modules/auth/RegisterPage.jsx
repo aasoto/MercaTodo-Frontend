@@ -91,6 +91,8 @@ export const RegisterPage = () => {
 
         if (state_id) {
             setFilteredCities(cities.filter(city => city.state_id == state_id));
+        } else {
+            setFilteredCities([]);
         }
     }, [state_id]);
 

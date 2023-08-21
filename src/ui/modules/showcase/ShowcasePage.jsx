@@ -87,7 +87,7 @@ export const ShowcasePage = () => {
                                     <select
                                         name="category"
                                         id="category"
-                                        className="border border-gray-500 rounded-md mt-3 px-5 placeholder:italic w-full"
+                                        className="border border-gray-500 rounded-md px-5 py-2 placeholder:italic w-full"
                                         value={category}
                                         onChange={onInputChange}
                                     >
