@@ -24,12 +24,13 @@ export const UsersPage = () => {
     const [cities, setCities] = useState([]);
     const [filteredCities, setFilteredCities] = useState([]);
 
-    const { number_document, name, email, state_id, city_id, onInputChange } = useForm({
+    const { number_document, name, email, state_id, city_id, enabled, onInputChange } = useForm({
         number_document: '',
         name: '',
         email: '',
         state_id: '',
         city_id: '',
+        enabled: '',
     });
 
     useEffect(() => {
@@ -66,13 +67,13 @@ export const UsersPage = () => {
 
     useEffect(() => {
         (new Users()).getData(
-            `${pageUrl}&filter[number_document]=${number_document}&filter[name]=${name}&filter[email]=${email}&filter[state_id]=${state_id}&filter[city_id]=${city_id}`,
+            `${pageUrl}&filter[number_document]=${number_document}&filter[name]=${name}&filter[email]=${email}&filter[state_id]=${state_id}&filter[city_id]=${city_id}&filter[enabled]=${enabled}`,
             token,
         ).then( resp => {
             localStorage.setItem('usersLastEndpoint', pageUrl);
             setResponse({ loading: false, ...resp });
         });
-    }, [pageUrl, number_document, name, email, state_id, city_id]);
+    }, [pageUrl, number_document, name, email, state_id, city_id, enabled]);
 
     return (
         <Container>
@@ -160,6 +161,22 @@ export const UsersPage = () => {
                                                     );
                                                 })
                                             }
+                                        </select>
+                                    </div>
+                                    <div className="relative rounded-md border border-gray-500 p-1 col-span-1">
+                                        <label htmlFor="enabled" className="absolute translate-x-7 -translate-y-3 bg-white dark:bg-gray-800 w-min px-3 text-gray-600 text-sm">
+                                            Habilitados
+                                        </label>
+                                        <select
+                                            name="enabled"
+                                            id="enabled"
+                                            className="border border-gray-500 rounded-md px-5 py-2 placeholder:italic w-full"
+                                            value={enabled}
+                                            onChange={onInputChange}
+                                        >
+                                            <option value="">Seleccionar...</option>
+                                            <option value="1">Sí</option>
+                                            <option value="0">No</option>
                                         </select>
                                     </div>
                                 </div>
