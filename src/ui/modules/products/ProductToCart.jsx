@@ -40,6 +40,7 @@ export const ProductToCart = ({product}) => {
             slug: product.slug, 
             price: product.price, 
             quantity,
+            stock: product.stock,
             picture: product.picture_1,
         }));
     }
