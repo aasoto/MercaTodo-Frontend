@@ -1,4 +1,5 @@
 import { RoundedInfo } from "../../components"
+import { ProductToCart } from "./ProductToCart";
 
 export const DescriptionProduct = ({ product }) => {
     
@@ -26,6 +27,7 @@ export const DescriptionProduct = ({ product }) => {
                 </span>
                 {product.product_unit.name + ' '} en stock.
             </div>
+            <ProductToCart product={product}/>
         </div>
     );
 }
