@@ -1,7 +1,15 @@
 import { Link } from "react-router-dom"
 import { ShoppingCartIcon } from "@heroicons/react/24/solid";
+import { useSelector } from "react-redux";
 
 export const ShowcaseProductCard = ({id, name, slug, picture_1, stock, price, product_category, product_unit}) => {
+    
+    const cart = useSelector((state) => state.cart)
+
+    const find = () => {
+        return cart.find((item) => item.id === id);
+    }
+
     return (
         <div className="bg-white dark:bg-gray-800 rounded-md p-4 shadow-md hover:shadow-lg scale-100 hover:scale-105 transition duration-200 flex flex-col gap-4">
             <Link to={`/product/${slug}`} className="relative">
@@ -11,9 +19,12 @@ export const ShowcaseProductCard = ({id, name, slug, picture_1, stock, price, pr
                     alt="product_image_1"
                 />
                 <div className="absolute top-5 right-5">
-                    {/* <div className="relative h-12 w-12 bg-black/40 flex items-center justify-center rounded-full">
-                        <ShoppingCartIcon className="w-6 h-6 text-white"/>
-                    </div> */}
+                    {
+                        find() &&
+                        <div className="relative h-12 w-12 bg-black/40 flex items-center justify-center rounded-full">
+                            <ShoppingCartIcon className="w-6 h-6 text-white"/>
+                        </div>
+                    }
                     {
                         stock == 0 &&
                         <div className="relative h-12 w-max px-2 bg-black/40 flex items-center justify-center rounded-md text-white">
