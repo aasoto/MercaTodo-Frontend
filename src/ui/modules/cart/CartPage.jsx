@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { AuthContext } from "../../../context";
 import { Unverified } from "../others";
-import { Container } from "../../components";
+import { Container, DangerInfoXL } from "../../components";
 import { useDispatch, useSelector } from "react-redux";
 import { MinusIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/solid"
 import { remove, update } from "../../../redux/slices/cartSlice";
@@ -34,7 +34,9 @@ export const CartPage = () => {
                     <div className="flex justify-center items-center gap-5">
                         <div className="w-full sm:w-11/12 bg-white rounded-lg px-2 sm:px-5 md:px-10 py-6 shadow-lg flex flex-col justify-center items-center gap-5">
                             {
-                                cart.map(product => {
+                                cart.length == 0
+                                ? <DangerInfoXL>Carrito de compras vacio</DangerInfoXL>
+                                : cart.map(product => {
                                     return (
                                         <div key={product.id} className="w-full border-t border-b border-gray-300 px-5 py-3">
                                             <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 w-full">
