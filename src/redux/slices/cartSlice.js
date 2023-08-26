@@ -7,7 +7,10 @@ export const cartSlice = createSlice({
     initialState,
     reducers: {
         add: (state, action) => {
-            state.push({...action.payload});
+            state.push({
+                ...action.payload, 
+                totalPrice: action.payload.price * action.payload.quantity,
+            });
         },
         update: (state, action) => {
             state.forEach( item => {
@@ -17,7 +20,9 @@ export const cartSlice = createSlice({
             });
         },
         remove: (state, action) => {
-            const index = state.indexOf(find(action.payload.id));
+            const index = state.indexOf(
+                state.find((item) => item.id === action.payload.id)
+            );
             state.splice(index, 1);
         }
     },

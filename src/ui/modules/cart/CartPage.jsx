@@ -1,17 +1,29 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../context";
 import { Unverified } from "../others";
 import { Container, DangerInfoXL } from "../../components";
 import { useDispatch, useSelector } from "react-redux";
 import { MinusIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/solid"
 import { remove, update } from "../../../redux/slices/cartSlice";
+import { Generics, Orders } from "../../../classes";
+import { ENV } from "../../../../env";
+import { useForm } from "../../../hooks";
 
 export const CartPage = () => {
 
-    const { isVerified } = useContext(AuthContext);
+    const { APIUrl, endPoints } = ENV;
+    const { apiVersion, orders } = endPoints;
+
+    const { token, isVerified } = useContext(AuthContext);
+
+    const { payment_method, onInputChange } = useForm({
+        payment_method: '',
+    });
 
     const cart = useSelector((state) => state.cart);
     const dispatch = useDispatch();
+
+    const [paymentMethods, setPaymentMethods] = useState([]);
 
     const decrementProductQuantity = (id, quantity) => {
         if (quantity == 1) {
@@ -27,6 +39,26 @@ export const CartPage = () => {
         dispatch(update({id, quantity: quantity + 1}));
     }
 
+    useEffect(() => {
+        const genericRequest = new Generics();
+        
+        genericRequest.getData(`${APIUrl}${apiVersion}${orders.paymentMethods.index}`, token)
+            .then(resp => {
+                setPaymentMethods(resp.data);
+            });
+    }, []);
+
+    const onSubmit = (event) => {
+        event.preventDefault();
+
+        (new Orders()).save(
+            cart,
+            payment_method,
+            token,
+        ).then(resp => {
+            console.log(resp);
+        });
+    }
     return (<>
         {
             isVerified
@@ -36,46 +68,78 @@ export const CartPage = () => {
                             {
                                 cart.length == 0
                                 ? <DangerInfoXL>Carrito de compras vacio</DangerInfoXL>
-                                : cart.map(product => {
-                                    return (
-                                        <div key={product.id} className="w-full border-t border-b border-gray-300 px-5 py-3">
-                                            <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 w-full">
-                                                <div className="col-span-1">
-                                                    <img
-                                                        className="h-32"
-                                                        src={product.picture}
-                                                        alt={`picture_${product.slug}`}
-                                                    />
-                                                </div>
-                                                <div className="col-span-1 sm:col-span-2">
-                                                    <h2 className="text-gray-900 font-semibold text-2xl capitalize">
-                                                        {product.name}
-                                                    </h2>
-                                                    <h4 className="text-gray-800 text-lg">
-                                                        Precio: {product.price.toLocaleString('es-CO', { style: 'currency', currency: 'COP' })}
-                                                    </h4>
-                                                    <h4 className="text-gray-800 text-lg">
-                                                        Cantidad: {product.quantity}
-                                                    </h4>
-                                                    <h3 className="text-gray-900 italic text-xl">
-                                                        Precio total: <span className="font-bold">{(product.price * product.quantity).toLocaleString('es-CO', { style: 'currency', currency: 'COP' })}</span>
-                                                    </h3>
-                                                </div>
-                                                <div className="col-span-1 flex justify-center items-center gap-3">
-                                                    <button onClick={() => decrementProductQuantity(product.id, product.quantity)} className="rounded-md px-3 py-2 bg-gray-300 hover:bg-gray-400 dark:bg-transparent text-gray-900 dark:text-white font-bold border-none dark:border border-transparent dark:border-white scale-100 hover:scale-105 transition duration-200">
-                                                        <MinusIcon className="w-6 h-6"/>
-                                                    </button>
-                                                    <button onClick={() => incrementProductQuantity(product.id, product.quantity, product.stock)} className="rounded-md px-3 py-2 bg-gray-300 hover:bg-gray-400 dark:bg-transparent text-gray-900 dark:text-white font-bold border-none dark:border border-transparent dark:border-white scale-100 hover:scale-105 transition duration-200">
-                                                        <PlusIcon className="w-6 h-6"/>
-                                                    </button>
-                                                    <button onClick={() => dispatch(remove({id: product.id}))} className="bg-red-600 rounded-md px-3 py-2 text-white p-1">
-                                                        <TrashIcon className="w-6 h-6"/>
-                                                    </button>
-                                                </div>
-                                            </div>
+                                : 
+                                <>
+                                    <form onSubmit={onSubmit} className="flex justify-end items-center w-full gap-5">
+                                        <div className="relative rounded-md border border-gray-500 p-1">
+                                            <label htmlFor="payment_method" className="absolute translate-x-7 -translate-y-3 bg-white dark:bg-gray-800 w-max px-3 text-gray-600 text-sm">
+                                                Metodo Pago
+                                            </label>
+                                            <select
+                                                name="payment_method"
+                                                id="payment_method"
+                                                className="border border-gray-500 rounded-md px-5 py-2 placeholder:italic w-full"
+                                                value={payment_method}
+                                                onChange={onInputChange}
+                                                required
+                                            >
+                                                <option value="">Seleccionar...</option>
+                                                {   paymentMethods.length != 0 &&
+                                                    paymentMethods.map(payment => {
+                                                        return (
+                                                            <option value={payment.code} key={payment.id}>{payment.name}</option>
+                                                        );
+                                                    })
+                                                }
+                                            </select>
                                         </div>
-                                    );
-                                })
+                                        <button type="submit" className="bg-green-600 hover:bg-green-700 text-white font-bold px-4 py-2 rounded-md shadow-none hover:shadow-sm scale-100 hover:scale-105 transition duration-200">
+                                            Confirmar orden
+                                        </button>
+                                    </form>
+                                    {
+                                        cart.map(product => {
+                                            return (
+                                                <div key={product.id} className="w-full border-t border-b border-gray-300 px-5 py-3">
+                                                    <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 w-full">
+                                                        <div className="col-span-1">
+                                                            <img
+                                                                className="h-32"
+                                                                src={product.picture}
+                                                                alt={`picture_${product.slug}`}
+                                                            />
+                                                        </div>
+                                                        <div className="col-span-1 sm:col-span-2">
+                                                            <h2 className="text-gray-900 font-semibold text-2xl capitalize">
+                                                                {product.name}
+                                                            </h2>
+                                                            <h4 className="text-gray-800 text-lg">
+                                                                Precio: {product.price.toLocaleString('es-CO', { style: 'currency', currency: 'COP' })}
+                                                            </h4>
+                                                            <h4 className="text-gray-800 text-lg">
+                                                                Cantidad: {product.quantity}
+                                                            </h4>
+                                                            <h3 className="text-gray-900 italic text-xl">
+                                                                Precio total: <span className="font-bold">{(product.price * product.quantity).toLocaleString('es-CO', { style: 'currency', currency: 'COP' })}</span>
+                                                            </h3>
+                                                        </div>
+                                                        <div className="col-span-1 flex justify-center items-center gap-3">
+                                                            <button onClick={() => decrementProductQuantity(product.id, product.quantity)} className="rounded-md px-3 py-2 bg-gray-300 hover:bg-gray-400 dark:bg-transparent text-gray-900 dark:text-white font-bold border-none dark:border border-transparent dark:border-white scale-100 hover:scale-105 transition duration-200">
+                                                                <MinusIcon className="w-6 h-6"/>
+                                                            </button>
+                                                            <button onClick={() => incrementProductQuantity(product.id, product.quantity, product.stock)} className="rounded-md px-3 py-2 bg-gray-300 hover:bg-gray-400 dark:bg-transparent text-gray-900 dark:text-white font-bold border-none dark:border border-transparent dark:border-white scale-100 hover:scale-105 transition duration-200">
+                                                                <PlusIcon className="w-6 h-6"/>
+                                                            </button>
+                                                            <button onClick={() => dispatch(remove({id: product.id}))} className="bg-red-600 rounded-md px-3 py-2 text-white p-1">
+                                                                <TrashIcon className="w-6 h-6"/>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })
+                                    }
+                                </>
                             }
                         </div>
                     </div>

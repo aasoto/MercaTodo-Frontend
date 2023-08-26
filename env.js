@@ -37,6 +37,12 @@ export const ENV = {
                 index: '/cities',
             },
         },
+        orders: {
+            store: '/order',
+            paymentMethods: {
+                index: '/payment_methods',
+            },
+        },
     },
     parameters: {
         showcase: {
