@@ -42,6 +42,7 @@ export const ProductToCart = ({product}) => {
             quantity,
             stock: product.stock,
             picture: product.picture_1,
+            totalPrice: product.price * quantity,
         }));
     }
 

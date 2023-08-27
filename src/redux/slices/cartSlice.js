@@ -7,15 +7,13 @@ export const cartSlice = createSlice({
     initialState,
     reducers: {
         add: (state, action) => {
-            state.push({
-                ...action.payload, 
-                totalPrice: action.payload.price * action.payload.quantity,
-            });
+            state.push({...action.payload});
         },
         update: (state, action) => {
             state.forEach( item => {
                 if (item.id === action.payload.id) {
                     item.quantity = action.payload.quantity;
+                    item.totalPrice = action.payload.totalPrice;
                 }
             });
         },

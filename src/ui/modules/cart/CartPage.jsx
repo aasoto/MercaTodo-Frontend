@@ -24,19 +24,38 @@ export const CartPage = () => {
     const dispatch = useDispatch();
 
     const [paymentMethods, setPaymentMethods] = useState([]);
+    const [errors, setErrors] = useState([]);
 
-    const decrementProductQuantity = (id, quantity) => {
+    const decrementProductQuantity = (id, price, quantity) => {
         if (quantity == 1) {
             return;
         }
-        dispatch(update({id, quantity: quantity - 1}));
+        quantity--;
+        const totalPrice = price * quantity;
+
+        dispatch(
+            update({
+                id, 
+                quantity, 
+                totalPrice
+            })
+        );
     }
 
-    const incrementProductQuantity = (id, quantity, stock) => {
+    const incrementProductQuantity = (id, price, quantity, stock) => {
         if (quantity == stock) {
             return;
         }
-        dispatch(update({id, quantity: quantity + 1}));
+        quantity++;
+        const totalPrice = price * quantity;
+        
+        dispatch(
+            update({
+                id, 
+                quantity, 
+                totalPrice,
+            })
+        );
     }
 
     useEffect(() => {
@@ -50,13 +69,17 @@ export const CartPage = () => {
 
     const onSubmit = (event) => {
         event.preventDefault();
-
+        console.log(cart);
         (new Orders()).save(
             cart,
             payment_method,
             token,
         ).then(resp => {
-            console.log(resp);
+            switch (resp.errors.message) {
+                case 'Order rejected':
+                    setErrors(resp.errors.limitatedStock);
+                    break;
+            }
         });
     }
     return (<>
@@ -98,6 +121,10 @@ export const CartPage = () => {
                                         </button>
                                     </form>
                                     {
+                                        errors &&
+                                        <h2 className="text-red-600 text-lg">No hay existencias suficientes para suplir la orden, por favor verifique cuantas unidades quedan de los diferentes productos.</h2>
+                                    }
+                                    {
                                         cart.map(product => {
                                             return (
                                                 <div key={product.id} className="w-full border-t border-b border-gray-300 px-5 py-3">
@@ -113,6 +140,16 @@ export const CartPage = () => {
                                                             <h2 className="text-gray-900 font-semibold text-2xl capitalize">
                                                                 {product.name}
                                                             </h2>
+                                                            {
+                                                                errors &&
+                                                                <h6 className="text-red-600 text-xs">
+                                                                    {errors.map((item) => {
+                                                                        if (item.id == product.id) {
+                                                                            return `Solo hay ${item.stock} existencias para este producto.`;
+                                                                        }
+                                                                    })}
+                                                                </h6>
+                                                            }
                                                             <h4 className="text-gray-800 text-lg">
                                                                 Precio: {product.price.toLocaleString('es-CO', { style: 'currency', currency: 'COP' })}
                                                             </h4>
@@ -124,10 +161,10 @@ export const CartPage = () => {
                                                             </h3>
                                                         </div>
                                                         <div className="col-span-1 flex justify-center items-center gap-3">
-                                                            <button onClick={() => decrementProductQuantity(product.id, product.quantity)} className="rounded-md px-3 py-2 bg-gray-300 hover:bg-gray-400 dark:bg-transparent text-gray-900 dark:text-white font-bold border-none dark:border border-transparent dark:border-white scale-100 hover:scale-105 transition duration-200">
+                                                            <button onClick={() => decrementProductQuantity(product.id, product.price, product.quantity)} className="rounded-md px-3 py-2 bg-gray-300 hover:bg-gray-400 dark:bg-transparent text-gray-900 dark:text-white font-bold border-none dark:border border-transparent dark:border-white scale-100 hover:scale-105 transition duration-200">
                                                                 <MinusIcon className="w-6 h-6"/>
                                                             </button>
-                                                            <button onClick={() => incrementProductQuantity(product.id, product.quantity, product.stock)} className="rounded-md px-3 py-2 bg-gray-300 hover:bg-gray-400 dark:bg-transparent text-gray-900 dark:text-white font-bold border-none dark:border border-transparent dark:border-white scale-100 hover:scale-105 transition duration-200">
+                                                            <button onClick={() => incrementProductQuantity(product.id, product.price, product.quantity, product.stock)} className="rounded-md px-3 py-2 bg-gray-300 hover:bg-gray-400 dark:bg-transparent text-gray-900 dark:text-white font-bold border-none dark:border border-transparent dark:border-white scale-100 hover:scale-105 transition duration-200">
                                                                 <PlusIcon className="w-6 h-6"/>
                                                             </button>
                                                             <button onClick={() => dispatch(remove({id: product.id}))} className="bg-red-600 rounded-md px-3 py-2 text-white p-1">
