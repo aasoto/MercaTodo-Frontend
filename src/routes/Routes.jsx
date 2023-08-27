@@ -1,5 +1,5 @@
 import { Routes as ReactRouterDOMRoutes, Route } from "react-router-dom"
-import { AddAdminPage, AddProductPage, CartPage, EditProductPage, OrdersPage, ProductsPage, ReportsPage, ShowcasePage, UsersPage } from "../ui";
+import { AddAdminPage, AddProductPage, CartPage, DetailOrderPage, EditProductPage, OrdersPage, ProductsPage, ReportsPage, ShowcasePage, UsersPage } from "../ui";
 import { HasRole } from "../middlewares";
 
 export const Routes = () => {
@@ -50,6 +50,11 @@ export const Routes = () => {
                     <CartPage />
                 </HasRole>
             }/>
+            <Route path="order/:code" element={
+                <HasRole name={'client'}>
+                    <DetailOrderPage />
+                </HasRole>
+            } />
         </ReactRouterDOMRoutes>
     );
 }

@@ -1,5 +1,6 @@
 import axios from "axios";
 import { ENV } from "../../../env";
+import { ResponseService } from "../services";
 
 export class Orders
 {
@@ -37,4 +38,24 @@ export class Orders
         return response;
     }
     
+    async show(orderCode, token)
+    {
+        const { APIUrl, endPoints } = ENV;
+        const { apiVersion, orders } = endPoints;
+
+        try {
+            const response = await axios.get(`${APIUrl}${apiVersion}${orders.show}/${orderCode}`, 
+                { 
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            );
+            return ResponseService.responseSuccess(response);
+        } catch (error) {
+            console.error(error);
+            return ResponseService.responseError();
+        }
+    }
 }

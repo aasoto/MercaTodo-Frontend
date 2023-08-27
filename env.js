@@ -39,6 +39,7 @@ export const ENV = {
         },
         orders: {
             store: '/order',
+            show: '/order',
             paymentMethods: {
                 index: '/payment_methods',
             },

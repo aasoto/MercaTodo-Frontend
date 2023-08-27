@@ -8,6 +8,7 @@ import { remove, update } from "../../../redux/slices/cartSlice";
 import { Generics, Orders } from "../../../classes";
 import { ENV } from "../../../../env";
 import { useForm } from "../../../hooks";
+import { useNavigate } from "react-router-dom";
 
 export const CartPage = () => {
 
@@ -15,6 +16,7 @@ export const CartPage = () => {
     const { apiVersion, orders } = endPoints;
 
     const { token, isVerified } = useContext(AuthContext);
+    const navigate = useNavigate();
 
     const { payment_method, onInputChange } = useForm({
         payment_method: '',
@@ -75,11 +77,17 @@ export const CartPage = () => {
             payment_method,
             token,
         ).then(resp => {
-            switch (resp.errors.message) {
-                case 'Order rejected':
-                    setErrors(resp.errors.limitatedStock);
+            switch (resp.statusText) {
+                case 'Created':
+                    navigate(`../order/${resp.data.orderCode}`);
+                    break;
+                case 'Bad Request':
+                    if (resp.errors.message == 'Order rejected') {
+                        setErrors(resp.errors.limitatedStock);
+                    }
                     break;
             }
+                
         });
     }
     return (<>
@@ -120,10 +128,7 @@ export const CartPage = () => {
                                             Confirmar orden
                                         </button>
                                     </form>
-                                    {
-                                        errors &&
-                                        <h2 className="text-red-600 text-lg">No hay existencias suficientes para suplir la orden, por favor verifique cuantas unidades quedan de los diferentes productos.</h2>
-                                    }
+                                    <h2 className={`${errors.length == 0 ? 'hidden' : 'block'} text-red-600 text-lg`}>No hay existencias suficientes para suplir la orden, por favor verifique cuantas unidades quedan de los diferentes productos.</h2>
                                     {
                                         cart.map(product => {
                                             return (
